@@ -6,11 +6,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Close from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import 'react-quill/dist/quill.snow.css';
-import { fetchOrgJobs,fetchApplicantDetails,uploadFile,updateCandidate } from '../actions/orgAction';
+import { fetchOrgJobs,fetchCandidateDetail,uploadFile,updateCandidate,fetchAllCandidates } from '../actions/orgAction';
 import ArrowIcon from '../assests/dropdown-arrow.svg';
 import Loader from './shared/Loader';
 import bvalid from 'bvalid/lib/bvalid.es';
-
+import {APPLICATION_STATUS_VALUES} from '../constants';
 
 
 class CandidateApplicationModal extends Component {
@@ -18,17 +18,17 @@ class CandidateApplicationModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cname               : '',
-            cemail              : '',
-            phone               : '',
-            jobtyp              : '',
-            jobid               : '',
+            cname               : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.cand_name) ? this.props.orgpanel.orgcanddetails.applicant.cand_name : '',
+            cemail              : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.email) ? this.props.orgpanel.orgcanddetails.applicant.email : '',
+            phone               : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.m_no) ? this.props.orgpanel.orgcanddetails.applicant.m_no : '',
+            jobtyp              : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.job_name) ? this.props.orgpanel.orgcanddetails.job_name : '',
+            jobid               : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.jb_id) ? this.props.orgpanel.orgcanddetails.applicant.jb_id : '',
             jobTypeddOpen       : false,
             statusddOpen        : false,
-            statusval           : '',
-            noteval             : '',
-            statusid            : '',
-            resume_url          : '',
+            statusval           : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[this.props.orgpanel.orgcanddetails.applicant.status] : '',
+            noteval             : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.note) ? this.props.orgpanel.orgcanddetails.applicant.note : '',
+            statusid            : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.status) ? this.props.orgpanel.orgcanddetails.applicant.status : '',
+            resume_url          : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.resume_url) ? this.props.orgpanel.orgcanddetails.applicant.resume_url : '',
             statusarr           : [ {id: 1,name: 'Applicants'},{id: 2,name: 'Matched'},{id: 3,name: 'Hired'},{id: 4,name: 'Review'}],
         }
     }
@@ -38,20 +38,22 @@ class CandidateApplicationModal extends Component {
             this.props.fetchOrgJobs();
         }
         if(this.props.candidate_detail){
-            this.props.fetchApplicantDetails({app_id : this.props.candidate_detail.app_id});
+            this.props.fetchCandidateDetail({app_id : this.props.candidate_detail.app_id});
         }
     }
 
     componentWillReceiveProps(nextProps){
-        // this.setState({
-        //     jobtyp              : -1,
-        //     profVal             : -1,
-        //     locVal              : -1,
-        //     rolVal              : nextProps.jobDetail.rspblty ? nextProps.jobDetail.rspblty : '',
-        //     expVal              : nextProps.jobDetail.exp ? nextProps.jobDetail.exp : '',
-        //     salVal              : nextProps.jobDetail.salary ? nextProps.jobDetail.salary : '',
-        //     skillsarr           : nextProps.jobDetail.Skills ? nextProps.jobDetail.Skills : [],
-        // })
+        this.setState({
+            cname       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.cand_name) ? nextProps.orgpanel.orgcanddetails.applicant.cand_name : '',
+            cemail      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.email) ? nextProps.orgpanel.orgcanddetails.applicant.email : '',
+            phone       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.m_no) ? nextProps.orgpanel.orgcanddetails.applicant.m_no : '',
+            jobtyp      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.job_name) ? nextProps.orgpanel.orgcanddetails.job_name : '',
+            jobid       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.jb_id) ? nextProps.orgpanel.orgcanddetails.applicant.jb_id : '',
+            statusval   : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[nextProps.orgpanel.orgcanddetails.applicant.status] : '',
+            noteval     : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.note) ? nextProps.orgpanel.orgcanddetails.applicant.note : '',
+            statusid    : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? nextProps.orgpanel.orgcanddetails.applicant.status : '', 
+            resume_url  : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.resume_url) ? nextProps.orgpanel.orgcanddetails.applicant.resume_url : '',
+        })
     }
 
     closeModal = () => {
@@ -106,6 +108,12 @@ class CandidateApplicationModal extends Component {
         })
     }
 
+    noteHandleChange = (e) =>{
+        this.setState({
+            noteval : e.target.value 
+        })
+    }
+
     addResume = (e) => {
         if(e.target.files && e.target.files[0]){
             this.props.uploadFile({
@@ -119,10 +127,7 @@ class CandidateApplicationModal extends Component {
         }
     }
 
-
-    addCandidate = () => {
-       
-
+   addCandidate = () => {
         var data = {
             jobid       : this.state.jobid ? this.state.jobid  : null,
             status      : this.state.statusid ? this.state.statusid  : null, 
@@ -131,13 +136,13 @@ class CandidateApplicationModal extends Component {
             phone       : this.state.phone ? this.state.phone : null,
             resume_url  : this.state.resume_url ? this.state.resume_url : null,
             note        : this.state.noteval ? this.state.noteval : null,
-            app_id      : this.state.app_id ? this.state.app_id  : null
+            app_id      : this.props.candidate_detail.app_id ? this.props.candidate_detail.app_id  : null
         }
 
         this.props.updateCandidate(data)
             .then((res) => {
                 if(res !==  undefined && res.data && res.data.success ){
-                    this.props.fetchOrgJobs({})
+                    this.props.fetchAllCandidates({})
                         .then((res) => {
                             if(res !==  undefined && res.data && res.data.success ){
                                 this.props.handleCandidateModalToggle(false);               
@@ -148,8 +153,8 @@ class CandidateApplicationModal extends Component {
     }
 
     render() {                                                                                  
-
-        if(this.props.orgpanel.orgjobs && (this.props.candidate_detail ? this.props.orgpanel.orgcanddetails : true)){
+        
+        if(this.props.orgpanel.orgjobs && (this.props.candidate_detail ? this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant : true)){
             return (
                 <div>
                     <Dialog
@@ -215,13 +220,15 @@ class CandidateApplicationModal extends Component {
                             </div>  
                             <div className="center-all"  style={{marginBottom:12}}>
                                 <label style={{width:64}}>Note</label>
-                               <textarea type="input"  className="org-profile-create-input-field" style={{minHeight:120}} placeholder="Add your note for candidate" value={this.state.phone} onChange={this.phoneHandleChange} />
+                               <textarea type="input"  className="org-profile-create-input-field" style={{padding: 12,minHeight:120}} placeholder="Add your note for candidate" value={this.state.noteval} onChange={this.noteHandleChange} />
                             </div>
                             <div className=""  style={{marginBottom:12}}>
                                 <label style={{width:64}}>Resume</label>
                                 <input type="file" accept="file/*" className="ed-prf-ppic-inpt"
                                         onChange={(e)=>{this.addResume(e)}}
                                         ref={input => this.clickAddCompanyLogo = input}/>
+                                        
+                                {this.state.resume_url ? <a href={this.state.resume_url} style={{textDecoration: 'none'}} target="_blank">View</a> : null}
                             </div>
                            
                             <button className="btn btn-primary org-signup-btn"  style={{marginTop:24}}  onClick={this.addCandidate}>Save</button> 
@@ -370,7 +377,7 @@ const mapStateToProps = state => {
     }
 }
   
-const mapDispatchToProps = {fetchApplicantDetails,fetchOrgJobs,uploadFile, updateCandidate};
+const mapDispatchToProps = {fetchCandidateDetail,fetchOrgJobs,uploadFile, updateCandidate,fetchAllCandidates};
   
 
 export default connect(mapStateToProps,mapDispatchToProps)(CandidateApplicationModal)

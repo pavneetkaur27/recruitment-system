@@ -196,12 +196,12 @@ class OrgPostJob extends Component {
                 <div  >
                     <TopNavbar title={this.state.headertitle}/>
                     <div className="row no-margin no-padding center-all">
-                        <Typography className="col-xl-8 col-lg-7  col-sm-6 org-generic-form-heading org-max-width no-padding" gutterBottom>
+                        <Typography className="col-xl-8 col-lg-7  col-sm-8 org-generic-form-heading org-max-width no-padding margin-left-sm" gutterBottom>
                             Post New Job
                         </Typography>
                     </div>
                     <div className="row no-margin no-padding center-all">
-                        <Card className="col-xl-8 col-lg-7  col-sm-6 org-post-job-card-container org-max-width">
+                        <Card className="col-xl-8 col-lg-7  col-sm-8 org-post-job-card-container org-max-width">
                             <CardContent>
                                 <Typography className="org-signup-detail-title"   gutterBottom>
                                     Title

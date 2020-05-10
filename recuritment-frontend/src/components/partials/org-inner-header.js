@@ -14,7 +14,7 @@ export default function InnerHeader(props) {
 
   return (
       <div >
-        <AppBar position="static" className="shared-header org-innerheader-toolbar" style={{height:56,padding:'0px 40px'}} >
+        <AppBar position="static" className="shared-header org-innerheader-toolbar" style={{height:56}} >
           <Toolbar variant="dense" >
             <Typography variant="h6" color="inherit" style={{display:"flex",flexGrow: 1}}>
                {props.title}

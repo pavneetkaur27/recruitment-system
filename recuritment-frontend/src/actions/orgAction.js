@@ -64,12 +64,9 @@ export const clearSavedJobApplicationValues = () => dispatch =>{
 }
 
 
-export const setManageProfileMenuItem = (menuitem) => dispatch =>{
+export const clearCandidateDetail = () => dispatch =>{
   return dispatch({
-    type: "ORG_MENUITEM_VALUE",
-    payload : {
-      menuitemvalue : menuitem
-    }
+    type: "ORG_REMOVE_CANDIDATE_DETAIL",
   });
 }
 
@@ -718,14 +715,14 @@ export const updateOrgJob = (data) => dispatch => {
     })
 }
 
-export const fetchInterviewStagesApplications = (data) => dispatch => {
+export const fetchAllCandidates = (data) => dispatch => {
   
   var requestObj = {
     method: 'POST',
     data: {
       jb_id : ((data && data.jobid ) ?  data.jobid : ''),
     },
-    url: API_ENDPOINT + '/org/int_stgs_app',
+    url: API_ENDPOINT + '/org/all_cand',
     headers: {
       'x-access-token': cookies.get('ou_at')
     }
@@ -733,7 +730,6 @@ export const fetchInterviewStagesApplications = (data) => dispatch => {
   startLoader(dispatch,1);
   return axios(requestObj)
     .then((response) => {
-      console.log(response);
       stopLoader(dispatch);
       if (response && response.data.success && response.data) {
         dispatch({
@@ -782,7 +778,7 @@ export const fetchInterviewStagesApplications = (data) => dispatch => {
     })
 }
 
-export const fetchApplicantDetails = (data) => dispatch => {
+export const fetchCandidateDetail = (data) => dispatch => {
   
   var requestObj = {
     method: 'POST',
@@ -797,6 +793,8 @@ export const fetchApplicantDetails = (data) => dispatch => {
   startLoader(dispatch,1);
   return axios(requestObj)
     .then((response) => {
+      console.log(response);
+     
       stopLoader(dispatch);
       if (response && response.data.success && response.data) {
         dispatch({
@@ -824,12 +822,7 @@ export const fetchApplicantDetails = (data) => dispatch => {
       if(err.response && err.response.data && err.response.data.err){
         err_msg = err.response.data.err;
       }
-      dispatch({
-        type: "ORG_AVAILABLE_JOB_APPLICATIONS", 
-        payload: {
-            org_job_applications : []
-        }
-      });
+      
       if(err && err.response && err.response.data){
         handleResponseErrorCase1(err.response.data || {})
       }
@@ -850,9 +843,16 @@ export const updateCandidate = (data) => dispatch => {
   var requestObj = {
     method: 'POST',
     data: {
-      app_id : data.app_id
+      jobid       : data.jobid ? data.jobid  : null,
+      status      : data.status ? data.status  : null, 
+      cname       : (data.cname) ? data.cname : null,
+      cemail      : data.cemail ? data.cemail : null,
+      phone       : data.phone ? data.phone : null,
+      resume_url  : data.resume_url ? data.resume_url : null,
+      note        : data.note ? data.note : null,
+      app_id      : data.app_id ? data.app_id  : null
     },
-    url: API_ENDPOINT + '/org/gt_cand_dtl',
+    url: API_ENDPOINT + '/org/c_cand_dtl',
     headers: {
       'x-access-token': cookies.get('ou_at')
     }

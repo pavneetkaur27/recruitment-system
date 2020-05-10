@@ -1,7 +1,5 @@
 const initialState = {
     loading     : false,
-    sort_order  : 1,
-    searchval   : null
 }
 
 export default function (state = initialState, action) {
@@ -79,6 +77,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                     orgcanddetails : action.payload.org_cand_details
+                }
+
+        case "ORG_REMOVE_CANDIDATE_DETAIL" :
+            return {
+                ...state,
+                    orgcanddetails : ''
                 }
 
         case "ORG_EMPLOYER_PROFILE":
