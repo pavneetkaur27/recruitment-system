@@ -1,26 +1,33 @@
-
-import ACTIVE_ICON from './assests/ico_active.svg';
-import INACTIVE_ICON from './assests/ico_inactive.svg';
-import PENDING_ICON from './assests/ico_pending.svg';
-
 export const API_ENDPOINT = 'http://localhost:4020';
 // export const API_ENDPOINT = 'http://3.135.224.242:4020';
 
 
-export const ROLE_VALUE = {
-   ADMIN                : 1,
-   CUSTOMER_EXECUTIVE   : 2
+export const JOB_STATUS = {
+	1 : "Approve",
+	2 : "Rejected",
+	3 : "Pending",
+	4 : "Closed",
 }
 
-export const ROLE_VALUE_CONSTANT = {
-    1 : "Admin",
-    2 : "Customer Executive"
+export const JOB_TYPE_VALUE = {
+	1 : "Full Time",
+	2 : "Part Time",
+	3 : "Internship",
 }
 
-export const STATUS_VALUE_CONSTANT = {
-    1 : { name : "Active", img : ACTIVE_ICON  },
-    2 : { name : "Inactive", img : INACTIVE_ICON  },
-    3 : { name : "Pending", img : PENDING_ICON  }
+export const APPLICATION_STATUS_VALUES = {
+	"PENDING" : 1,
+	"SHORTLIST" : 2,
+	"HIRED" :3,
+	"NOT_SELECTED" : 4
 }
 
-export const STATUS_VALUE = [ 'ACTIVE' ,'INACTIVE' ,'PENDING'];
+export const ORG_MENU_ITEM_VALUES = {
+	"EDIT_PROFILE" : 1,
+	"CHANGE_PASSWORD" : 2,
+	"CHANGE_EMAIL" :3,
+	"EDIT_COMPANY_PROFILE" : 4
+}
+
+
+// export default constants;

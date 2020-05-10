@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import close_img from '../../assests/close-btn.svg';
 import success from '../../assests/success.svg';
 import fail from '../../assests/fail.svg';
-import {hideAlert} from '../../actions/userAction';
+import {hideAlert} from '../../actions/orgAction';
 
 class Alerts extends Component {
     constructor(props) {
@@ -58,7 +58,7 @@ class Alerts extends Component {
 
 function mapStateToProps(state) {
     return {
-        storedata: state.userReducer.data
+        storedata: state.orgReducer.data
     }
 }
 
