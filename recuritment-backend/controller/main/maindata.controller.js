@@ -471,37 +471,74 @@ exports.getJobApplications = async function(req,res,next){
 
 exports.addCandidateDetails = async function(req,res,next){
 
-    req.checkBody('job_id',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('jobid',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('status',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('cname',errorCodes.invalid_parameters[1]).notEmpty();;
+    req.checkBody('cemail',errorCodes.invalid_parameters[1]);
+    req.checkBody('phone',errorCodes.invalid_parameters[1]);
+    req.checkBody('resume_url',errorCodes.invalid_parameters[1]);
+    req.checkBody('note',errorCodes.invalid_parameters[1]);
+    req.checkBody('app_id',errorCodes.invalid_parameters[1]);
 
     if(req.validationErrors()){
       	return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
     }
     try{
- 
-        var [err1,jobApplication] = await to(mongo.Model('appliedjob').find({ _id : data.app_id,act : true},{},{})); 
-        if(err1){
-            return sendError(res,err1,"server_error");    
+        var data = req.body;
+
+        var _ob = {};
+        _ob.jb_id       = data.jobid;
+        _ob.cand_name   = data.cname;
+        _ob.status      = parseInt(data.status);
+        _ob.act         = true;
+
+        if(data.cemail){
+            _ob.email = data.cemail;
         }
 
-        if(!jobApplication){
-            return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
-        }
-        
-        var [err,job] = await to(mongo.Model('job').find({_id : jobApplication.jb_id,act : true},{},{})); 
-        if(err){
-            return sendError(res,err,"server_error");    
+        if(data.phone){
+            _ob.m_no = data.phone;
         }
 
-        if(!job){
-            return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);   
+        if(data.note){
+            _ob.note = data.note;
         }
-        
-        let applicationobj = {
-            applicant   : jobApplication,
-            job_name    : job.title
+        if(data.resume_url){
+            if(!bvalid.isUrl(data.resume_url)){
+                return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+            }else{
+                _ob.resume_url = data.resume_url;
+            }
         }
-        
-        return sendSuccess(res,applicationobj);
+
+        if(!data.app_id){
+            mongo.Model('appliedjob').insert(_ob,function(err0,resp0){
+                if(err0){
+                    return sendError(res,"server_error","server_error");
+                }
+                return sendSuccess(res,{});
+            })   
+        }else{
+            var [err1,jobApplication] = await to(mongo.Model('appliedjob').find({ _id : data.app_id,act : true},{},{})); 
+            if(err1){
+                return sendError(res,err1,"server_error");    
+            }
+            if(!jobApplication){
+                mongo.Model('appliedjob').insert(_ob,function(err0,resp0){
+                    if(err0){
+                        return sendError(res,"server_error","server_error");
+                    }
+                    return sendSuccess(res,{});
+                }) 
+            }else{
+                console.log(_ob);
+                var updatedCandidate = await mongo.Model('appliedjob').updateOne({ _id : data.app_id , act:true},
+                    {$set : _ob }
+                );
+                console.log(updatedCandidate);
+                return sendSuccess(res,{});
+            }
+        }
     }catch(err){
         return sendError(res,err,"server_error");
     }
@@ -515,8 +552,10 @@ exports.getCandidateDetails = async function(req,res,next){
       	return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
     }
     try{
- 
-        var [err1,jobApplication] = await to(mongo.Model('appliedjob').find({ _id : data.app_id,act : true},{},{})); 
+        
+        var data = req.body;
+
+        var [err1,jobApplication] = await to(mongo.Model('appliedjob').findOne({ _id : data.app_id,act : true},{},{})); 
         if(err1){
             return sendError(res,err1,"server_error");    
         }
@@ -525,7 +564,7 @@ exports.getCandidateDetails = async function(req,res,next){
             return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
         }
         
-        var [err,job] = await to(mongo.Model('job').find({_id : jobApplication.jb_id,act : true},{},{})); 
+        var [err,job] = await to(mongo.Model('job').findOne({_id : jobApplication.jb_id,act : true},{},{})); 
         if(err){
             return sendError(res,err,"server_error");    
         }
@@ -533,13 +572,10 @@ exports.getCandidateDetails = async function(req,res,next){
         if(!job){
             return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);   
         }
-        
-        let applicationobj = {
+        return sendSuccess(res,{
             applicant   : jobApplication,
-            job_name    : job.title
-        }
-        
-        return sendSuccess(res,applicationobj);
+            job_name    : job.j_prof
+        });
     }catch(err){
         return sendError(res,err,"server_error");
     }

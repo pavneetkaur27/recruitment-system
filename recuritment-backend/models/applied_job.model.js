@@ -8,6 +8,17 @@ const schema = mongoose.Schema({
         type : String,
         required : true
       },
+      
+      email : {
+        type : String,
+        required : false
+      },
+
+      // mobile no
+      m_no : {
+        type : Number,
+        required : false
+      },
 
       //job _id
       jb_id : {
@@ -31,14 +42,8 @@ const schema = mongoose.Schema({
         default : true
       },
 
-      //cover letter
-      cvr_ltr : {
-        type : String,
-        default : null
-      },
-
-      //message sent when action taken by recruiter
-      msg : {
+      //note sent when action taken by recruiter
+      note : {
         type : String,
         trim: true,
         default : null

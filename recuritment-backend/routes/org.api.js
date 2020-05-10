@@ -52,8 +52,8 @@ router.post('/c_job',orgController.maindata.createJob);
 router.post('/g_p_jobs',orgController.maindata.getPostedJobs);
 
 
-//get interview stages and applications
-router.post('/int_stgs_app',orgController.maindata.getJobApplications);
+//get All candidates
+router.post('/all_cand',orgController.maindata.getJobApplications);
 
 //add candidate details
 router.post('/c_cand_dtl',orgController.maindata.addCandidateDetails);
