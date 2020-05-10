@@ -83,7 +83,7 @@ Mongo.prototype.insert = function (c, cb) {
       cb(null, resp);
     })
   } else {
-    return userInstance.create(c);
+    return this.model(c).save( c );
   }
 }
 
@@ -93,7 +93,7 @@ Mongo.prototype.update = function (c, d, o, cb) {
   if (isFunc(cb)) {
     this.model.update(c, d, o, cb);
   } else {
-    this.model.update(c, d, o);
+    return this.model.update(c, d, o);
   }
 }
 
@@ -103,7 +103,7 @@ Mongo.prototype.updateOne = function (c, d, o, cb) {
   if (isFunc(cb)) {
     this.model.updateOne(c, d, o, cb);
   } else {
-    this.model.updateOne(c, d, o);
+    return this.model.updateOne(c, d, o);
   }
 }
 
@@ -113,7 +113,7 @@ Mongo.prototype.findOneAndUpdate = function (c, d, o, cb) {
   if (isFunc(cb)) {
     this.model.findOneAndUpdate(c, d, o, cb);
   } else {
-    this.model.findOneAndUpdate(c, d, o);
+    return this.model.findOneAndUpdate(c, d, o);
   }
 }
 

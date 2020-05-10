@@ -2,8 +2,8 @@ require('dotenv').config();
 exports.server = {
     SERVER_PORT                             : Number(process.env.PORT) || 3000,
     MODE                                    : 'prod',
-    MONGO_URL                               : 'mongodb://localhost:27017/crud_backend',
-    MONGO_TEST_URL                          : 'mongodb://localhost:27017/crud_backend',
+    MONGO_URL                               : 'mongodb://localhost:27017/career_recuritement',
+    MONGO_TEST_URL                          : 'mongodb://localhost:27017/career_recuritement',
     SESSION_SECRET                          : process.env.REDIS_PASSWORD || 'zhdbcshvchdvhdvfd',
     REDIS_PASSWORD                          : process.env.REDIS_PASSWORD || '',
     REDIS_HOST                              : process.env.REDIS_HOST || 'localhost',
@@ -15,5 +15,10 @@ exports.server = {
     RABBITMQ_PORT                           : 5672,
     RABBITMQ_USER                           : 'jsdchvs',
     RABBITMQ_PASSWORD                       : 'sdjbshj',
-    JWT_PRIVATE_KEY                         : "sndcvdhgf2736634rjhhbh"
+    JWT_PRIVATE_KEY                         : "sndcvdhgf2736634rjhhbh",
+    TWO_WAY_CRYPT_SECRET                    : 'snjjijcvhdgfdghbhdf8159641782',
+    AWS_ACCESS_KEY                          : "",
+    AWS_SECRET_KEY                          : "",
+    AWS_REGION                              : "",
+    S3_BUCKET                               : ""
 }

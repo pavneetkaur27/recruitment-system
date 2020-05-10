@@ -35,7 +35,7 @@ app.use(cors());
 
 /*----------------------Require route-----------------------*/
 const index                       = require('./routes/index');
-const userdata                    = require('./routes/userRoute');
+const org                         = require('./routes/org.api');
 /*----------------------------------------------------------*/
 
 //connect_mongo
@@ -82,7 +82,7 @@ app.use(session(
 
 /*---------All Routes----------*/ 
 app.use('/', index);
-app.use('/userdata', userdata);
+app.use('/org', org);
 /*-----------------------------*/
 
 
