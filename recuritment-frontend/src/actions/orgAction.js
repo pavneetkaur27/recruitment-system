@@ -256,7 +256,6 @@ export const uploadFile = (data,cb) => dispatch => {
   axios(requestObj).then((response) => {
     if (response && response.data.success && response.data && response.data.data) {
       stopLoader(dispatch);
-      console.log(response.data.data)
       return cb(response.data.data.url);
     } else {
       stopLoader(dispatch);

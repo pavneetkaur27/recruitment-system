@@ -96,7 +96,7 @@ class OrgTrackApplications extends Component {
                                                 <div  style={{display:'flex',padding: '8px 12px 16px 12px'}}><img style={{width:50,height:50,marginRight:16}} src={CandidateEmptyProfilePic}></img><div className="">{application.cand_name}</div></div>
                                                 <div className="dis-flex" style={{borderTop: '0.4px solid rgb(218, 227, 237)',padding: '8px 12px'}}>
                                                     <div style={{color: 'blue'}} onClick={() => this.editCandidate(application)}>Edit</div>
-                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this. CandidateCandidate(application)}>Remove Candidate</div>
+                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this. removeCandidate(application)}>Remove Candidate</div>
                                                 </div>
                                             </div>
                                         ))

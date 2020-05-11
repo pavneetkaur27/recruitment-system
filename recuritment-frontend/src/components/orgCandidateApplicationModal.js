@@ -28,7 +28,7 @@ class CandidateApplicationModal extends Component {
             statusval           : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[this.props.orgpanel.orgcanddetails.applicant.status] : '',
             noteval             : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.note) ? this.props.orgpanel.orgcanddetails.applicant.note : '',
             statusid            : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.status) ? this.props.orgpanel.orgcanddetails.applicant.status : '',
-            resume_url          : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.resume_url) ? this.props.orgpanel.orgcanddetails.applicant.resume_url : '',
+            resume_url          : (this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant && this.props.orgpanel.orgcanddetails.applicant.resume_url) ? this.props.orgpanel.orgcanddetails.applicant.resume_url :'',
             statusarr           : [ {id: 1,name: 'Applicants'},{id: 2,name: 'Matched'},{id: 3,name: 'Hired'},{id: 4,name: 'Review'}],
         }
     }
@@ -44,15 +44,15 @@ class CandidateApplicationModal extends Component {
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            cname       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.cand_name) ? nextProps.orgpanel.orgcanddetails.applicant.cand_name : '',
-            cemail      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.email) ? nextProps.orgpanel.orgcanddetails.applicant.email : '',
-            phone       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.m_no) ? nextProps.orgpanel.orgcanddetails.applicant.m_no : '',
-            jobtyp      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.job_name) ? nextProps.orgpanel.orgcanddetails.job_name : '',
-            jobid       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.jb_id) ? nextProps.orgpanel.orgcanddetails.applicant.jb_id : '',
-            statusval   : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[nextProps.orgpanel.orgcanddetails.applicant.status] : '',
-            noteval     : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.note) ? nextProps.orgpanel.orgcanddetails.applicant.note : '',
-            statusid    : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? nextProps.orgpanel.orgcanddetails.applicant.status : '', 
-            resume_url  : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.resume_url) ? nextProps.orgpanel.orgcanddetails.applicant.resume_url : '',
+            cname       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.cand_name) ? nextProps.orgpanel.orgcanddetails.applicant.cand_name : (this.state.cname ? this.state.cname :''),
+            cemail      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.email) ? nextProps.orgpanel.orgcanddetails.applicant.email : (this.state.cemail ? this.state.cemail :''),
+            phone       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.m_no) ? nextProps.orgpanel.orgcanddetails.applicant.m_no : (this.state.phone ? this.state.phone :''),
+            jobtyp      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.job_name) ? nextProps.orgpanel.orgcanddetails.job_name : (this.state.jobtyp ? this.state.jobtyp :''),
+            jobid       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.jb_id) ? nextProps.orgpanel.orgcanddetails.applicant.jb_id : (this.state.jobid ? this.state.jobid :''),
+            statusval   : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[nextProps.orgpanel.orgcanddetails.applicant.status] : (this.state.statusval ? this.state.statusval :''),
+            noteval     : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.note) ? nextProps.orgpanel.orgcanddetails.applicant.note : (this.state.noteval ? this.state.noteval :''),
+            statusid    : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? nextProps.orgpanel.orgcanddetails.applicant.status : (this.state.statusid ? this.state.statusid :''), 
+            resume_url  : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.resume_url) ? nextProps.orgpanel.orgcanddetails.applicant.resume_url : (this.state.resume_url ? this.state.resume_url :''),
         })
     }
 
@@ -121,7 +121,7 @@ class CandidateApplicationModal extends Component {
               cookie_type : "ou_at"
             },(url)=>{
               if(bvalid.isUrl(url)){
-                return this.setState({resume_url : url});
+                this.setState({resume_url : url});
               }
             })
         }
