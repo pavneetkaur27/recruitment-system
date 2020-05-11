@@ -1323,6 +1323,9 @@ html::-webkit-scrollbar-thumb {
     .main-bottom-nav{
         display: flex !important;
     }
+    .org-track-section{
+        min-height: calc(100vh -104px);
+    }
 }
 
 @media only screen and (max-width: 769px){
