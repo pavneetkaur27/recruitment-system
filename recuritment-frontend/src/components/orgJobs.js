@@ -135,8 +135,8 @@ class OrgJobs extends Component {
                                                             onClose={this.handleClose}
                                                             // style={{boxShadow:}}
                                                         >
-                                                            <MenuItem onClick={(e) => this.handleEditJob(this.state.menuid,'edit',e)} className="org-menuitem-style org-generic-normal-font-style">Edit Job</MenuItem>
-                                                            <MenuItem onClick={(e) => this.handleDeleteJob(this.state.menuid,e)} className="org-menuitem-style org-generic-normal-font-style">Delete Job</MenuItem>
+                                                            <MenuItem  className="org-menuitem-style org-generic-normal-font-style">Edit Job</MenuItem>
+                                                            <MenuItem  className="org-menuitem-style org-generic-normal-font-style">Delete Job</MenuItem>
                                                         </Menu>  
                                                     </div>
                                                 </div>
