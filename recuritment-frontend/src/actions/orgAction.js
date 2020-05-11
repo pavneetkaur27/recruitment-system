@@ -33,7 +33,7 @@ const handleResponseErrorCase1 = (data)=>{
     if(data.code == 401 || data.code == 498){
       cookies.remove("ou_at",{path : "/"});
       return window.location.replace('/');
-    }else if(data.code == 404 && data.message ==  "Organisation not found"){
+    }else if(data.code == 404 && data.err ==  "Organisation not found"){
       return window.location.replace('/cmpprofile');
     }
   }
@@ -68,52 +68,6 @@ export const clearCandidateDetail = () => dispatch =>{
   return dispatch({
     type: "ORG_REMOVE_CANDIDATE_DETAIL",
   });
-}
-
-export const isOrgVerified = () => dispatch => {
-  
-  var requestObj = {
-    method: 'POST',
-    url: API_ENDPOINT + '/org/vrfy_org',
-    headers: {
-      'x-access-token':  cookies.get('ou_at')
-    }
-  };
-  startLoader(dispatch,1);
-  return axios(requestObj).then((response) => {
-    stopLoader(dispatch);
-    if (response && response.data.success && response.data) {
-     return response;
-    } else {
-      return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: "Something went wrong",
-          dispatch: dispatch
-        }
-      });
-    }
-  })
-    .catch((err) => {
-      var err_msg = "Something went wrong";
-      if (err.response && err.response.statusText) {
-        err_msg = err.response.statusText;
-      }
-      if(err.response && err.response.data && err.response.data.err){
-        err_msg = err.response.data.err;
-      }
-      if(err && err.response && err.response.data){
-        handleResponseErrorCase1(err.response.data || {})
-      }
-      stopLoader(dispatch);
-      return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: err_msg,
-          dispatch: dispatch
-        }
-      });
-    })
 }
 
 export const orgSignUp = (eml , pass, cpass) => dispatch => {
@@ -189,7 +143,11 @@ export const orgLogin = (eml , pass) => dispatch => {
       if(response.data.data.a_tkn){
         cookies.set('ou_at', response.data.data.a_tkn,{ path: '/' }); 
       }
-      return response;
+      if(response.data.data.is_org){
+        return window.location.replace('/dashboard/jobs');
+      }else{
+        return window.location.replace('/cmpprofile');
+      }
      } else {
       return dispatch({
         type: "SHOW_NOTIFY", payload: {
@@ -200,26 +158,26 @@ export const orgLogin = (eml , pass) => dispatch => {
       });
     }
   })
-    .catch((err) => {
-      stopLoader(dispatch);
-      var err_msg = "Something went wrong";
-      if (err.response && err.response.statusText) {
-        err_msg = err.response.statusText;
+  .catch((err) => {
+    stopLoader(dispatch);
+    var err_msg = "Something went wrong";
+    if (err.response && err.response.statusText) {
+      err_msg = err.response.statusText;
+    }
+    if(err.response && err.response.data && err.response.data.err){
+      err_msg = err.response.data.err;
+    }
+    if(err && err.response && err.response.data){
+      handleResponseErrorCase1(err.response.data || {})
+    }
+    return dispatch({
+      type: "SHOW_NOTIFY", payload: {
+        type: 'error',
+        message: err_msg,
+        dispatch: dispatch
       }
-      if(err.response && err.response.data && err.response.data.err){
-        err_msg = err.response.data.err;
-      }
-      if(err && err.response && err.response.data){
-        handleResponseErrorCase1(err.response.data || {})
-      }
-      return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: err_msg,
-          dispatch: dispatch
-        }
-      });
-    })
+    });
+  })
 }
 
 export const uploadimage = (data,cb) => dispatch => {
@@ -331,57 +289,6 @@ export const uploadFile = (data,cb) => dispatch => {
     return cb(null);
   })
 }
-
-
-export const orgEmailAccountVerify = (data) => dispatch => {
-  
-  var requestObj = {
-    method: 'POST',
-    data: {
-      vrfy_tkn : data.vrfy_tkn
-    },
-    url: API_ENDPOINT + '/vrfy_org_eml',
-    headers: {
-      'x-access-token': cookies.get('ou_at')
-    }
-  };
-  startLoader(dispatch,1);
-  axios(requestObj).then((response) => {
-    stopLoader(dispatch);
-    if (response && response.data.success && response.data) {
-      return response;
-    } else {
-      return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: "Something went wrong",
-          dispatch: dispatch
-        }
-      });
-    }
-  })
-    .catch((err) => {
-      var err_msg = "Something went wrong";
-      if (err.response && err.response.statusText) {
-        err_msg = err.response.statusText;
-      }
-      if(err.response && err.response.data && err.response.data.message){
-        err_msg = err.response.data.message;
-      }
-      if(err && err.response && err.response.data){
-        handleResponseErrorCase1(err.response.data || {})
-      }
-      stopLoader(dispatch);
-      return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: err_msg,
-          dispatch: dispatch
-        }
-      });
-    })
-}
-
 
 
 export const addCompanyProfile = (data) => dispatch => {
@@ -564,7 +471,6 @@ export const fetchOrgJobs = (data) => dispatch => {
     }
   })
     .catch((err) => {
-      console.log("sd");
       var err_msg = "Something went wrong";
       if (err.response && err.response.statusText) {
         err_msg = err.response.statusText;
@@ -758,12 +664,7 @@ export const fetchAllCandidates = (data) => dispatch => {
       if(err.response && err.response.data && err.response.data.err){
         err_msg = err.response.data.err;
       }
-      dispatch({
-        type: "ORG_AVAILABLE_JOB_APPLICATIONS", 
-        payload: {
-            org_job_applications : []
-        }
-      });
+      
       if(err && err.response && err.response.data){
         handleResponseErrorCase1(err.response.data || {})
       }
@@ -862,10 +763,15 @@ export const updateCandidate = (data) => dispatch => {
     .then((response) => {
       stopLoader(dispatch);
       if (response && response.data.success && response.data) {
+        let msg = "Candidate Details Added"
+        if(data.app_id){
+          msg = "Candidate Details Edited"
+        }
         dispatch({
-          type: "ORG_CANDIDATE_DETAIL", 
-          payload: {
-              org_cand_details : response.data.data
+          type: "SHOW_NOTIFY", payload: {
+            type: 'success',
+            message: msg,
+            dispatch: dispatch
           }
         });
         return response;
@@ -893,6 +799,64 @@ export const updateCandidate = (data) => dispatch => {
             org_job_applications : []
         }
       });
+      if(err && err.response && err.response.data){
+        handleResponseErrorCase1(err.response.data || {})
+      }
+      stopLoader(dispatch);
+       return dispatch({
+        type: "SHOW_NOTIFY", payload: {
+          type: 'error',
+          message: err_msg,
+          dispatch: dispatch
+        }
+      });
+    })
+}
+
+export const removeCandidate = (data) => dispatch => {
+  
+  var requestObj = {
+    method: 'POST',
+    data: {
+      app_id : data.app_id
+    },
+    url: API_ENDPOINT + '/org/dlt_cand',
+    headers: {
+      'x-access-token': cookies.get('ou_at')
+    }
+  };
+  startLoader(dispatch,1);
+  return axios(requestObj)
+    .then((response) => {
+      stopLoader(dispatch);
+      if (response && response.data.success && response.data) {
+        dispatch({
+          type: "SHOW_NOTIFY", payload: {
+            type: 'success',
+            message: 'Candidate Removed',
+            dispatch: dispatch
+          }
+        });
+        return response;
+      } else {
+        return dispatch({
+          type: "SHOW_NOTIFY", payload: {
+            type: 'error',
+            message: "Something went wrong",
+            dispatch: dispatch
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      var err_msg = "Something went wrong";
+      if (err.response && err.response.statusText) {
+        err_msg = err.response.statusText;
+      }
+      if(err.response && err.response.data && err.response.data.err){
+        err_msg = err.response.data.err;
+      }
+      
       if(err && err.response && err.response.data){
         handleResponseErrorCase1(err.response.data || {})
       }
@@ -942,8 +906,8 @@ export const fetchCompanyProfile = () => dispatch => {
       if (err.response && err.response.statusText) {
         err_msg = err.response.statusText;
       }
-      if(err.response && err.response.data && err.response.data.message){
-        err_msg = err.response.data.message;
+      if(err.response && err.response.data && err.response.data.err){
+        err_msg = err.response.data.err;
       }
       if(err && err.response && err.response.data){
         handleResponseErrorCase1(err.response.data || {})

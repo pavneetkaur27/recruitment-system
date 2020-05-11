@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import { withRouter } from 'react-router';
 import TopNavbar from './partials/org-inner-header';
 import bvalid from 'bvalid/lib/bvalid.es';
-import { fetchAllCandidates,clearCandidateDetail} from '../actions/orgAction';
+import { fetchAllCandidates,clearCandidateDetail,removeCandidate} from '../actions/orgAction';
 import AddCandidateIcon from '../assests/ico_users.svg';
 import CandidateEmptyProfilePic from '../assests/candidate_profile_pic.svg';
 import CandidateApplicationModal from './orgCandidateApplicationModal';
@@ -38,6 +38,16 @@ class OrgTrackApplications extends Component {
         })
     }
 
+    // removeCandidate
+    removeCandidate(candidate_detail){
+       this.props.removeCandidate({app_id : candidate_detail.app_id})
+        .then((res) => {
+            if(res !==  undefined && res.data && res.data.success ){
+                this.props.fetchAllCandidates();
+            }
+        })
+    }
+
     handleCandidateModalToggle = (val) => {
         this.setState({ 
             openApplicantModal: val 
@@ -45,23 +55,12 @@ class OrgTrackApplications extends Component {
         this.props.clearCandidateDetail();
     }
 
-    handleCandidateChanges = (val) => {
-        this.props.fetchAllCandidates()
-            .then(res => {
-                if(res !==  undefined && res.data && res.data.success ){
-                    this.setState({ 
-                        openApplicantModal : val 
-                    });
-                }
-            })
-    }
-    
     render() {
         console.log(this.props);
         if(this.props.orgpanel.orgjobapplications){ 
             return (
                 <div>
-                    {this.state.openApplicantModal ? <CandidateApplicationModal open={this.state.openApplicantModal} handleCandidateChanges = {this.handleCandidateChanges} handleCandidateModalToggle={this.handleCandidateModalToggle} candidate_detail = {this.state.candidate_detail} /> : null}
+                    {this.state.openApplicantModal ? <CandidateApplicationModal open={this.state.openApplicantModal}  handleCandidateModalToggle={this.handleCandidateModalToggle} candidate_detail = {this.state.candidate_detail} /> : null}
                       
                     <TopNavbar  title={this.state.headertitle}/>
                      <div className="org-track-container">
@@ -78,7 +77,7 @@ class OrgTrackApplications extends Component {
                                                 <div  style={{display:'flex',padding: '8px 12px 16px 12px'}}><img style={{width:50,height:50,marginRight:16}} src={CandidateEmptyProfilePic}></img><div className="">{application.cand_name}</div></div>
                                                 <div className="dis-flex" style={{borderTop: '0.4px solid rgb(218, 227, 237)',padding: '8px 12px'}}>
                                                     <div style={{color: 'blue'}} onClick={() => this.editCandidate(application)}>Edit</div>
-                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove</div>
+                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove Candidate</div>
                                                 </div>
                                             </div>
                                         ))
@@ -97,7 +96,7 @@ class OrgTrackApplications extends Component {
                                                 <div  style={{display:'flex',padding: '8px 12px 16px 12px'}}><img style={{width:50,height:50,marginRight:16}} src={CandidateEmptyProfilePic}></img><div className="">{application.cand_name}</div></div>
                                                 <div className="dis-flex" style={{borderTop: '0.4px solid rgb(218, 227, 237)',padding: '8px 12px'}}>
                                                     <div style={{color: 'blue'}} onClick={() => this.editCandidate(application)}>Edit</div>
-                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove</div>
+                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this. CandidateCandidate(application)}>Remove Candidate</div>
                                                 </div>
                                             </div>
                                         ))
@@ -116,7 +115,7 @@ class OrgTrackApplications extends Component {
                                                 <div  style={{display:'flex',padding: '8px 12px 16px 12px'}}><img style={{width:50,height:50,marginRight:16}} src={CandidateEmptyProfilePic}></img><div className="">{application.cand_name}</div></div>
                                                 <div className="dis-flex" style={{borderTop: '0.4px solid rgb(218, 227, 237)',padding: '8px 12px'}}>
                                                     <div style={{color: 'blue'}} onClick={() => this.editCandidate(application)}>Edit</div>
-                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove</div>
+                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove Candidate</div>
                                                 </div>
                                             </div>
                                         ))
@@ -135,7 +134,7 @@ class OrgTrackApplications extends Component {
                                                 <div  style={{display:'flex',padding: '8px 12px 16px 12px'}}><img style={{width:50,height:50,marginRight:16}} src={CandidateEmptyProfilePic}></img><div className="">{application.cand_name}</div></div>
                                                 <div className="dis-flex" style={{borderTop: '0.4px solid rgb(218, 227, 237)',padding: '8px 12px'}}>
                                                     <div style={{color: 'blue'}} onClick={() => this.editCandidate(application)}>Edit</div>
-                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove</div>
+                                                    <div style={{color: 'red',marginLeft : 20}} onClick={() => this.removeCandidate(application)}>Remove Candidate</div>
                                                 </div>
                                             </div>
                                         ))
@@ -160,6 +159,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = {fetchAllCandidates,clearCandidateDetail};
+const mapDispatchToProps = {fetchAllCandidates,clearCandidateDetail,removeCandidate};
 
 export default withRouter(connect( mapStateToProps, mapDispatchToProps)(OrgTrackApplications));

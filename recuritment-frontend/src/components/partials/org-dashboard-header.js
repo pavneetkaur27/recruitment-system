@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
-import  companyLogo from '../../assests/org-logo-empty-state.svg';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
@@ -12,13 +11,10 @@ import MenuList from '@material-ui/core/MenuList';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import bvalid from 'bvalid/lib/bvalid.es';
-// import { logoutOrgUser } from '../../../actions/loginAction';
-// import {setManageProfileMenuItem,fetchCompanyProfile} from '../../../actions/organisationAction';
+import {fetchCompanyProfile} from '../../actions/orgAction';
 import ExploreIcon from '../../icons/explore-icon';
 import AppliedJobIcon from '../../icons/applied-job-icon';
 import ResumeIcon from '../../icons/resume-icon';
-import Person from '@material-ui/icons/Person';
-
 import { Router, Route, Link } from "react-router-dom";
 
 class DashBoardHeader extends Component {
@@ -43,7 +39,7 @@ class DashBoardHeader extends Component {
   }
   
   componentDidMount(){
-    // this.props.fetchCompanyProfile();
+    this.props.fetchCompanyProfile();
   }
 
   componentWillReceiveProps(nextProps){
@@ -97,9 +93,6 @@ class DashBoardHeader extends Component {
     })
   }
 
-  logoutOrgUser = () =>{
-    this.handleClose();
-  }
 
   handleMenuBar(index){
     this.handleClose();
@@ -154,7 +147,7 @@ class DashBoardHeader extends Component {
     }
 }
   
-const mapDispatchToProps = {};
+const mapDispatchToProps = {fetchCompanyProfile};
   
 
 

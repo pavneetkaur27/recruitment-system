@@ -443,7 +443,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .org-dashboard-menubar{
-    margin-top: 22px;
+    margin-top: 10px;
 }
 
 .org-dashboard-menubar .MuiPaper-elevation8{
@@ -468,9 +468,7 @@ html::-webkit-scrollbar-thumb {
         padding: 0px!important;
     }
 
-    .org-dashboard-menubar .MuiList-padding{
-        padding : 0px!important;
-    }
+   
 }
 .org-dashboard-header-container{
     width: 100%;
@@ -478,6 +476,13 @@ html::-webkit-scrollbar-thumb {
     /* position: relative; */
 }
 
+.org-dashboard-menubar .MuiMenuItem-root{
+    min-height: auto!important;
+}
+
+.org-dashboard-menubar .MuiList-padding{
+    padding : 0px!important;
+}
 
 @media (min-width: 576px) {
     .org-dashboard-header-container {
@@ -1291,6 +1296,13 @@ html::-webkit-scrollbar-thumb {
     margin:12px 0px;
     color: #2d4766;
     font-size: 16px;
+}
+
+
+.company-logo-header{
+    width: 42px;
+    height: 42px;
+    border-radius: 100%;
 }
 
 @media only screen and (max-width: 992px){

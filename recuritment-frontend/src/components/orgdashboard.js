@@ -28,14 +28,8 @@ class OrgDashboard extends Component {
                 <Route exact path="/dashboard/jobs" render={() => <OrganisationDashboardJob /> }/> 
                 <Route exact path="/dashboard/postjob" render={() => <OrganisationDashboardPostJob /> }/> 
                 <Route exact path="/dashboard/track" render={() => <OrganisationDashboardTrackApplications /> }/> 
-                <Route path="*" component={InvalidPage} />
-                { /* 
-                <Route exact path="/dashboard/jobapplications" render={() => <OrganisationDashboardJobApplications/> }/> 
-                <Route exact path="/dashboard/candidateapplicaton" render={() => <OrgDashboardIndividualApplication/> }/> 
-                <Route exact path="/dashboard/candidateresume" render={() => <OrgResumeTemplate/> }/> 
-                <Route exact path="/dashboard/jobs" render={() => <OrganisationDashboardJob /> }/> 
                 <Route exact path="/dashboard" render={() => <OrganisationDashboardJob /> }/> 
-                <Route path="*" component={InvalidPage} /> */}
+                <Route path="*" component={InvalidPage} />
               </Switch>
           </div>
         </div> 
