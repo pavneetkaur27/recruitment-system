@@ -1246,6 +1246,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .org-track-section{
+    overflow: auto!important;
     display: inline-block;
     vertical-align: top;
     height: 100%;
@@ -1256,7 +1257,7 @@ html::-webkit-scrollbar-thumb {
     overflow: hidden;
     border-radius: 3px;
     padding :16px;
-    min-height: calc(100vh - 64px);
+    height: calc(100vh - 64px);
 }
 
 .org-track-title{

@@ -42,15 +42,15 @@ class CandidateApplicationModal extends Component {
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            cname       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.cand_name) ? nextProps.orgpanel.orgcanddetails.applicant.cand_name : (this.state.cname ? this.state.cname :''),
-            cemail      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.email) ? nextProps.orgpanel.orgcanddetails.applicant.email : (this.state.cemail ? this.state.cemail :''),
-            phone       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.m_no) ? nextProps.orgpanel.orgcanddetails.applicant.m_no : (this.state.phone ? this.state.phone :''),
-            jobtyp      : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.job_name) ? nextProps.orgpanel.orgcanddetails.job_name : (this.state.jobtyp ? this.state.jobtyp :''),
-            jobid       : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.jb_id) ? nextProps.orgpanel.orgcanddetails.applicant.jb_id : (this.state.jobid ? this.state.jobid :''),
-            statusval   : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[nextProps.orgpanel.orgcanddetails.applicant.status] : (this.state.statusval ? this.state.statusval :''),
-            noteval     : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.note) ? nextProps.orgpanel.orgcanddetails.applicant.note : (this.state.noteval ? this.state.noteval :''),
-            statusid    : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? nextProps.orgpanel.orgcanddetails.applicant.status : (this.state.statusid ? this.state.statusid :''), 
-            resume_url  : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.resume_url) ? nextProps.orgpanel.orgcanddetails.applicant.resume_url : (this.state.resume_url ? this.state.resume_url :''),
+            cname       : (this.state.cname ? this.state.cname : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.cand_name) ? nextProps.orgpanel.orgcanddetails.applicant.cand_name:'' ),
+            cemail      : ( this.state.cemail ? this.state.cemail : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.email) ? nextProps.orgpanel.orgcanddetails.applicant.email :''),
+            phone       : ( this.state.phone ? this.state.phone  : (nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.m_no) ? nextProps.orgpanel.orgcanddetails.applicant.m_no : ''),
+            jobtyp      : ( this.state.jobtyp ? this.state.jobtyp  :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.job_name) ? nextProps.orgpanel.orgcanddetails.job_name : ''),
+            jobid       : ( this.state.jobid ? this.state.jobid  :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.jb_id) ? nextProps.orgpanel.orgcanddetails.applicant.jb_id : ''),
+            statusval   : ( this.state.statusval ? this.state.statusval  :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? APPLICATION_STATUS_VALUES[nextProps.orgpanel.orgcanddetails.applicant.status] :''),
+            noteval     : ( this.state.noteval ? this.state.noteval :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.note) ? nextProps.orgpanel.orgcanddetails.applicant.note :''),
+            statusid    : ( this.state.statusid ? this.state.statusid :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.status) ? nextProps.orgpanel.orgcanddetails.applicant.status : ''), 
+            resume_url  : ( this.state.resume_url ? this.state.resume_url :(nextProps.orgpanel.orgcanddetails && nextProps.orgpanel.orgcanddetails.applicant && nextProps.orgpanel.orgcanddetails.applicant.resume_url) ? nextProps.orgpanel.orgcanddetails.applicant.resume_url :''),
         })
     }
 
@@ -140,18 +140,14 @@ class CandidateApplicationModal extends Component {
         this.props.updateCandidate(data)
             .then((res) => {
                 if(res !==  undefined && res.data && res.data.success ){
-                    this.props.fetchAllCandidates({})
-                        .then((res) => {
-                            if(res !==  undefined && res.data && res.data.success ){
-                                this.props.handleCandidateModalToggle(false);               
-                            }
-                        })
+                    this.props.handleCandidateModalToggle(false);               
+                    this.props.fetchAllCandidates();
                 }
         })    
     }
 
     render() {                                                                                  
-        
+        console.log(this.state.cname);
         if(this.props.orgpanel.orgjobs && (this.props.candidate_detail ? this.props.orgpanel.orgcanddetails && this.props.orgpanel.orgcanddetails.applicant : true)){
             return (
                 <div>
@@ -230,130 +226,6 @@ class CandidateApplicationModal extends Component {
                             </div>
                            
                             <button className="btn btn-primary org-signup-btn"  style={{marginTop:24}}  onClick={this.addCandidate}>Save</button> 
-                            {/* <div className="org-dd-wrapper">
-                                <div className="org-dd-header" onClick={this.toggleJobType}>
-                                    <div className="org-dd-header-title">{ this.state.jobtyp == -1 ? ( this.props.jobDetail.type ? JOB_TYPE_VALUE[this.props.jobDetail.type] : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Full Time</span>) : this.state.jobtypearr[this.state.jobtyp].jname}</div>
-                                    {this.props.mode == 'edit' ? <img className="org-dd-header-icon" src={ArrowIcon}></img> : null}
-                                </div>
-                                {this.state.jobTypeddOpen && 
-                                    <ul className="org-dd-list" style={{"overflowY": "hidden"}}>
-                                        {this.state.jobtypearr.map((jobtyp,index) => (
-                                            <li className="org-dd-list-item" key={jobtyp.id}  onClick={() => this.selectJobtype(index, jobtyp.id)}>{jobtyp.jname}</li>
-                                        ))}
-                                    </ul>
-                                }
-                            </div>
-                                        
-                            <Typography className="org-signup-detail-title org-post-job-detail-title-margin" gutterBottom>
-                                Profile
-                            </Typography>
-                            <div className="org-dd-wrapper-post-job">
-                                <div className="org-dd-header" onClick={this.toggleProfile}>
-                                    <div className="org-dd-header-title">{ this.state.profVal == -1 ? ( this.props.jobDetail.Job_profile && this.props.jobDetail.Job_profile.length > 0 ? this.props.jobDetail.Job_profile[0].jprof : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Full Stack Developer</span>) : (this.props.orgpanel.orgprofiles.length> 0 ? this.props.orgpanel.orgprofiles[this.state.profVal].jprof : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Full Stack Developer</span>)}</div>
-                                    {this.props.mode == 'edit' ? <img className="org-dd-header-icon" src={ArrowIcon}></img> : null}
-                                </div>
-                                {this.state.profileddOpen && 
-                                    <ul className="org-dd-list">
-                                        {this.props.orgpanel.orgprofiles && this.props.orgpanel.orgprofiles.map((profile,index) => (
-                                            <li className="org-dd-list-item" key={profile._id}  onClick={() => this.selectProfile(index, profile._id)}>{profile.jprof}</li>
-                                        ))}
-                                    </ul>
-                                }
-                            </div>
-
-                            <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
-                                Skills
-                            </Typography>
-                            <div className="org-dd-wrapper-post-job" style={{height:'auto'}}>
-                                <div className="org-dd-header" onClick={this.toggleSkills} style={{height:'auto'}}>
-                                    <div className="org-dd-header-title org-dd-no-wrap-hide">
-                                        {this.state.skillsarr.length > 0 ? 
-                                        this.props.mode == 'edit' ?
-                                            this.state.skillsarr.map( (skill ,index) => (
-                                                <Chip
-                                                    key={index}
-                                                    label={(<div className="org-chip-label-style">{skill.skl}</div>)}
-                                                    onDelete={() => this.handleDeleteSkill(index)}
-                                                    deleteIcon = {<img src={chipCloseIcon} />}
-                                                    className="org-chips-style"
-                                                />
-                                            )) :
-                                            this.state.skillsarr.map( (skill ,index) => (
-                                                <Chip
-                                                    key={index}
-                                                    label={(<div className="org-chip-label-style">{skill.skl}</div>)}
-                                                   
-                                                    className="org-chips-style"
-                                                />
-                                            ))
-                                        : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Add Skills</span> }
-                                            
-                                    </div>
-                                    {this.props.mode == 'edit' ? <img className="org-dd-header-icon" src={ArrowIcon}></img> : null}
-                                </div>
-                                {this.state.skillsddOpen && 
-                                    <ul className="org-dd-list">
-                                        {this.props.orgpanel.orgskills && this.props.orgpanel.orgskills.map((skill,index) => (
-                                            <li className="org-dd-list-item" key={skill._id}  onClick={() => this.addSkills(index, skill._id)}>{skill.skl}</li>
-                                        ))}
-                                    </ul>
-                                }
-                            </div>
-                            <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
-                                Location
-                            </Typography>
-                            <div className="org-dd-wrapper-post-job">
-                                <div className="org-dd-header" onClick={this.toggleLocation}>
-                                    <div className="org-dd-header-title">{ this.state.locVal == -1 ? ( this.props.jobDetail.Location && this.props.jobDetail.Location.length > 0 ? this.props.jobDetail.Location[0].city : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Delhi</span>) : (this.props.orgpanel.orglocations.length> 0 ? this.props.orgpanel.orglocations[this.state.locVal].city : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Delhi</span>)}</div>
-                                    {this.props.mode == 'edit' ? <img className="org-dd-header-icon" src={ArrowIcon}></img> : null}
-                                </div>
-                                {this.state.locationlddOpen && 
-                                    <ul className="org-dd-list">
-                                        {this.props.orgpanel.orglocations && this.props.orgpanel.orglocations.map((loc,index) => (
-                                            <li className="org-dd-list-item" key={loc._id}  onClick={() => this.selectLocation(index, loc._id)}>{loc.city}</li>
-                                        ))}
-                                    </ul>
-                                }
-                            </div>
-                         
-                            <div className="row no-margin" >
-                                <div className="col-sm-6 no-padding">
-                                    <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
-                                        {this.state.jobtyp == -1  ? ( this.props.jobDetail.type == 3 ? "Internship Time Period" : "Preferred Experience") : (this.state.jobtyp == 2 ? "Internship Time Period" : "Preferred Experience" )}
-                                    </Typography>
-                                    <div className="org-dd-wrapper-post-job" >
-                                        <div className="org-dd-header" onClick={this.toggleExperience}>
-                                            <div className="org-dd-header-title">{this.state.expVal ? this.state.expVal : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. 0-1 year</span> } </div>
-                                            {this.props.mode == 'edit' ? <img className="org-dd-header-icon" src={ArrowIcon}></img> : null}
-                                        </div>
-                                        {this.state.experienceddOpen && 
-                                            <ul className="org-dd-list">
-                                                {this.state.exparr.map((exp,index) => (
-                                                    <li className="org-dd-list-item" key={exp}  onClick={() => this.selectExperience(exp, index)}>{exp}</li>
-                                                ))}
-                                            </ul>
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-sm-6" style={{paddingRight:0}}>
-                                    <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
-                                        {this.state.jobtyp == -1  ? ( this.props.jobDetail.type == 3 ? "Stipend (optional)" : "Salary (optional)") : (this.state.jobtyp == 2 ? "Stipend (optional)" : "Salary (optional)")}
-                                    </Typography>
-                                    <input type="number"  className = "org-profile-create-input-field"  placeholder="Enter salary" value={this.state.salVal} onChange={this.handlesalary} />
-                                </div>
-                            </div>
-                            <Typography className="org-signup-detail-title org-post-job-detail-title-margin"   gutterBottom>
-                                Roles and Responsibilities
-                            </Typography>
-                            
-                            <ReactQuill className="org-rols-resp-val" theme="snow"
-                                modules ={quill_modules}
-                                formats ={quill_formats}
-                                value   ={this.state.rolVal}
-                                onChange={this.handlleRolesAndResp}
-                                placeholder ='Add Something'
-                            ></ReactQuill>
-                            {this.props.mode == 'edit' ? <button className="btn btn-primary org-signup-btn"  style={{marginTop:40}}  onClick={this.updateJob}>Update</button> : null} */}
                         </DialogContent>
                     </Dialog>
                 </div>
