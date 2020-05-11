@@ -76,7 +76,7 @@ exports.signUp = function(req,res,next){
     }
 }
 
-exports.signIn = function(req,res,next){
+exports.signIn = async function(req,res,next){
     req.checkBody('eml',errorCodes.invalid_parameters[1]).notEmpty();
     req.checkBody('pwd',errorCodes.invalid_parameters[1]).notEmpty();
 
@@ -124,8 +124,21 @@ exports.signIn = function(req,res,next){
                 'eml' : resp0.eml,
                 'role' : 1
             };
-            var jtoken = JWT.sign(ob,configs.JWT_PRIVATE_KEY,60*60*24*30);
-            return sendSuccess(res,{a_tkn : jtoken });
+            let jtoken  = JWT.sign(ob,configs.JWT_PRIVATE_KEY,60*60*24*30);
+            let is_org  = false;
+            
+            mongo.Model('orgmap').findOne({
+                'oemp' : resp0._id,
+                'act' : true
+            },function(err2, usr_org_map){
+                if(err2){
+                    return sendError(res,err,"server_error");
+                }
+                if(usr_org_map){
+                    is_org  = true;
+                }
+                return sendSuccess(res,{a_tkn : jtoken, is_org : is_org });
+            })
         } else {
             return sendError(res,"password_not_match","password_not_match");
         } 
@@ -154,6 +167,7 @@ exports.uploadFile = async (req,res,next)=>{
     });
 };
 
+//add company profile
 exports.createOrg = async function(req,res,next){
     req.checkBody('org_name',errorCodes.invalid_parameters[1]).notEmpty();
     req.checkBody('org_logo',errorCodes.invalid_parameters[1]).notEmpty();
@@ -232,6 +246,38 @@ exports.createOrg = async function(req,res,next){
             return sendSuccess(res,org);
         })
     }
+}
+
+//get company profile
+exports.getOrg = async function(req,res,next){
+    var aid = mongoose.Types.ObjectId(req.decoded.id);
+
+    mongo.Model('orgmap').findOne({
+        'oemp' : aid,
+        'act' : true
+    },{
+        oid : 1
+    },function(err0,usr_org_map){
+        if(err0){
+            return sendError(res,"server_error","server_error");
+        }
+        if(!usr_org_map){
+            return sendError(res,"org_not_found","org_not_found");
+        }
+
+        mongo.Model('org').findOne({
+            _id : usr_org_map.oid,
+            act : true
+        },function(err0,org){
+            if(err0){
+                return sendError(res,"server_error","server_error");
+            }
+            if(!org){
+                return sendError(res,"org_not_found","org_not_found");
+            }
+            return sendSuccess(res,{ org : org}); 
+        })
+    })
 }
 
 // /skills
@@ -361,10 +407,12 @@ exports.createJob = async function(req,res,next){
 
 exports.getPostedJobs = async function(req,res,next){
     var aid = mongoose.Types.ObjectId(req.decoded.id);
-     var data = req.body;
     
     try{
         var org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
+        if(!org_user_map){
+            return sendError(res,"org_not_found","org_not_found");    
+        }
         var oid = org_user_map.oid;
         var [err,jobs] = await to(mongo.Model('job').find({oid : oid,act : true},{},{})); 
         if(err){
@@ -385,6 +433,7 @@ exports.getJobApplications = async function(req,res,next){
     try{
         var data = req.body;
 
+        
         var pending_applicants  = [];
         var matched_applicants  = [];
         var hired_applicants    = [];
@@ -398,6 +447,9 @@ exports.getJobApplications = async function(req,res,next){
         // }
         var aid = mongoose.Types.ObjectId(req.decoded.id);
         var org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
+        if(!org_user_map){
+            return sendError(res,"org_not_found","org_not_found");    
+        }
         var oid = org_user_map.oid;
         var [err,jobs] = await to(mongo.Model('job').find({oid : oid,act : true},{},{})); 
         if(err){
@@ -531,11 +583,11 @@ exports.addCandidateDetails = async function(req,res,next){
                     return sendSuccess(res,{});
                 }) 
             }else{
-                console.log(_ob);
+                // console.log(_ob);
                 var updatedCandidate = await mongo.Model('appliedjob').updateOne({ _id : data.app_id , act:true},
                     {$set : _ob }
                 );
-                console.log(updatedCandidate);
+                // console.log(updatedCandidate);
                 return sendSuccess(res,{});
             }
         }
@@ -576,6 +628,39 @@ exports.getCandidateDetails = async function(req,res,next){
             applicant   : jobApplication,
             job_name    : job.j_prof
         });
+    }catch(err){
+        return sendError(res,err,"server_error");
+    }
+}
+
+
+exports.removeCandidate = async function(req,res,next){
+
+    req.checkBody('app_id',errorCodes.invalid_parameters[1]).notEmpty();
+
+    if(req.validationErrors()){
+      	return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+    }
+    try{
+        
+        var data = req.body;
+
+        var [err1,jobApplication] = await to(mongo.Model('appliedjob').findOne({ _id : data.app_id,act : true},{},{})); 
+        if(err1){
+            return sendError(res,err1,"server_error");    
+        }
+
+        if(!jobApplication){
+            return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+        }
+        
+        let _ob = {
+            act : false
+        }
+        var removeCandidate = await mongo.Model('appliedjob').updateOne({ _id : data.app_id , act:true},
+            {$set : _ob }
+        );
+        return sendSuccess(res,{});
     }catch(err){
         return sendError(res,err,"server_error");
     }

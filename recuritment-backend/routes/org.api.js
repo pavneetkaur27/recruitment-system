@@ -38,6 +38,9 @@ router.post('/upload',uploadFile,orgController.maindata.uploadFile);
 //create company profile
 router.post('/c_org',orgController.maindata.createOrg);
 
+//get company profile
+router.post('/gt_org_dt',orgController.maindata.getOrg);
+
 //get skills
 router.post('/gaskl',orgController.maindata.getAllSkills);
 
@@ -57,6 +60,9 @@ router.post('/all_cand',orgController.maindata.getJobApplications);
 
 //add candidate details
 router.post('/c_cand_dtl',orgController.maindata.addCandidateDetails);
+
+//remove candidate(soft deletion)
+router.post('/dlt_cand',orgController.maindata.removeCandidate);
 
 //fetch applicant details
 router.post('/gt_cand_dtl',orgController.maindata.getCandidateDetails);
