@@ -792,12 +792,7 @@ export const updateCandidate = (data) => dispatch => {
       if(err.response && err.response.data && err.response.data.err){
         err_msg = err.response.data.err;
       }
-      dispatch({
-        type: "ORG_AVAILABLE_JOB_APPLICATIONS", 
-        payload: {
-            org_job_applications : []
-        }
-      });
+     
       if(err && err.response && err.response.data){
         handleResponseErrorCase1(err.response.data || {})
       }

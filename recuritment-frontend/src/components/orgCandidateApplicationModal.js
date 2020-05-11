@@ -34,9 +34,7 @@ class CandidateApplicationModal extends Component {
     }
 
     componentDidMount(){
-        if(!this.props.orgpanel.orgjobs){
-            this.props.fetchOrgJobs();
-        }
+        this.props.fetchOrgJobs();
         if(this.props.candidate_detail){
             this.props.fetchCandidateDetail({app_id : this.props.candidate_detail.app_id});
         }
