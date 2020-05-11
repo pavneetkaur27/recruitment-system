@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.76056ea9.chunk.css",
+    "main.js": "/static/js/main.d76f7462.chunk.js",
+    "main.js.map": "/static/js/main.d76f7462.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/css/2.3c515868.chunk.css": "/static/css/2.3c515868.chunk.css",
+    "static/js/2.bb94b1b1.chunk.js": "/static/js/2.bb94b1b1.chunk.js",
+    "static/js/2.bb94b1b1.chunk.js.map": "/static/js/2.bb94b1b1.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.72500c225821f347c9c491b0be24b9dc.js": "/precache-manifest.72500c225821f347c9c491b0be24b9dc.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.3c515868.chunk.css.map": "/static/css/2.3c515868.chunk.css.map",
+    "static/css/main.76056ea9.chunk.css.map": "/static/css/main.76056ea9.chunk.css.map",
+    "static/media/candidate_profile_pic.svg": "/static/media/candidate_profile_pic.f84ed13b.svg",
+    "static/media/chip-close-icon.svg": "/static/media/chip-close-icon.b3ca7e94.svg",
+    "static/media/close-btn.svg": "/static/media/close-btn.3d388d91.svg",
+    "static/media/dropdown-arrow.svg": "/static/media/dropdown-arrow.036a4c2e.svg",
+    "static/media/fail.svg": "/static/media/fail.6fe44237.svg",
+    "static/media/ico_users.svg": "/static/media/ico_users.d7e612e0.svg",
+    "static/media/index.css": "/static/media/loader.707852f1.svg",
+    "static/media/success.svg": "/static/media/success.85092b97.svg"
+  }
+}
