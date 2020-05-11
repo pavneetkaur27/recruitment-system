@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = 7070;
+const port = 5070;
 
 app.use(express.static('./build'));
 
