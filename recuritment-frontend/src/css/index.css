@@ -1324,7 +1324,7 @@ html::-webkit-scrollbar-thumb {
         display: flex !important;
     }
     .org-track-section{
-        min-height: calc(100vh -104px);
+        height: calc(100vh -104px);
     }
 }
 
