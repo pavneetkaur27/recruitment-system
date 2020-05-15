@@ -54,6 +54,8 @@ router.post('/c_job',orgController.maindata.createJob);
 // get jobs details
 router.post('/g_p_jobs',orgController.maindata.getPostedJobs);
 
+//delete job
+router.post('/dlt_job',orgController.maindata.deletePostedJob);
 
 //get All candidates
 router.post('/all_cand',orgController.maindata.getJobApplications);

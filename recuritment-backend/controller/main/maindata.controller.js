@@ -424,6 +424,45 @@ exports.getPostedJobs = async function(req,res,next){
     }
 }
 
+exports.deletePostedJob = async function(req,res,next){
+    
+    req.checkBody('jb_id',errorCodes.invalid_parameters[1]).notEmpty();
+
+    if(req.validationErrors()){
+      	return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+    }
+    try{
+        let data    = req.body;
+        let aid     = mongoose.Types.ObjectId(req.decoded.id);
+        let jb_id   = data.jb_id;
+
+        let org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
+        if(!org_user_map){
+            return sendError(res,"org_not_found","org_not_found");    
+        }
+        let oid = org_user_map.oid;
+
+        let [err,job] = await to(mongo.Model('job').findOne({_id : jb_id,act : true},{},{})); 
+        if(err){
+            return sendError(res,err,"server_error");    
+        }
+        
+        if(!job){
+            return sendError(res,"invalid_parameters","invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+        }
+        
+        let _ob = {
+            act : false
+        }
+        let removeJob = await mongo.Model('job').updateOne({ _id :jb_id , act:true},
+            {$set : _ob }
+        );
+        return sendSuccess(res,{});
+    }catch(err){
+        return sendError(res,err,"server_error");
+    }
+}
+
 
 exports.getJobApplications = async function(req,res,next){
 

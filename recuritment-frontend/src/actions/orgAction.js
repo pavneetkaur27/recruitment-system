@@ -917,15 +917,14 @@ export const fetchCompanyProfile = () => dispatch => {
     })
 }
 
-export const closejob = (data) => dispatch => {
+export const deleteJob = (data) => dispatch => {
   
   var requestObj = {
     method: 'POST',
     data: {
-      jb_id : data.jb_id,
-      hrd_cnd : data.hired_cand
+      jb_id : data.jb_id
     },
-    url: API_ENDPOINT + '/org/close_job',
+    url: API_ENDPOINT + '/org/dlt_job',
     headers: {
       'x-access-token': cookies.get('ou_at')
     }
@@ -939,11 +938,11 @@ export const closejob = (data) => dispatch => {
         dispatch({
           type: "SHOW_NOTIFY", payload: {
             type: 'success',
-            message: "Job has been closed successfully!",
+            message: "Job Deleted!",
             dispatch: dispatch
           }
         });
-        dispatch(fetchOrgJobs({mode:'non_closed_jobs'}));
+        dispatch(fetchOrgJobs());
         return response;
       } else {
         return dispatch({

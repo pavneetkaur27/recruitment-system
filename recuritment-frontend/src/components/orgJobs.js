@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Typography from '@material-ui/core/Typography';
-import { fetchOrgJobs ,clearSavedJobApplicationValues} from '../actions/orgAction';
+import { fetchOrgJobs ,clearSavedJobApplicationValues,deleteJob} from '../actions/orgAction';
 import TopNavbar from './partials/org-inner-header';
 import SettingIcon from '../assests/org-jobs-setting-icon.png';
 import Loader from './shared/Loader';
@@ -47,11 +47,12 @@ class OrgJobs extends Component {
     }
 
     handleDeleteJob(index, e){
+       if(window.confirm("Delete this.job?")){
         this.setState({
-            selectedJob : this.props.orgpanel.orgjobs[index],
-            openCloseJobModal : true,
             anchorEl : null
         })
+        this.props.deleteJob({jb_id : this.props.orgpanel.orgjobs[index]._id}) ;
+       }
     }
 
     handleClose = () =>{
@@ -70,13 +71,6 @@ class OrgJobs extends Component {
         return this.setState({ 
             openCloseJobModal: val 
         });
-    }
-
-    gotToViewApplicationPage(jobid) {                                                                                                                                                                           
-        this.props.history.push({
-            pathname : '/org/dashboard/jobapplications',
-            state : {jobid : jobid}
-        })
     }
 
     getDateValue(date){
@@ -136,7 +130,7 @@ class OrgJobs extends Component {
                                                             // style={{boxShadow:}}
                                                         >
                                                             <MenuItem  className="org-menuitem-style org-generic-normal-font-style">Edit Job</MenuItem>
-                                                            <MenuItem  className="org-menuitem-style org-generic-normal-font-style">Delete Job</MenuItem>
+                                                            <MenuItem onClick={(e) => this.handleDeleteJob(this.state.menuid,e)} className="org-menuitem-style org-generic-normal-font-style">Delete Job</MenuItem>
                                                         </Menu>  
                                                     </div>
                                                 </div>
@@ -165,6 +159,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = {fetchOrgJobs,clearSavedJobApplicationValues};
+const mapDispatchToProps = {fetchOrgJobs,clearSavedJobApplicationValues,deleteJob};
 
 export default withRouter(connect( mapStateToProps, mapDispatchToProps)(OrgJobs));  
