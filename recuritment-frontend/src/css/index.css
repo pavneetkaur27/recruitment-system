@@ -63,6 +63,9 @@ html::-webkit-scrollbar-thumb {
 .text-align-center{
 	text-align: center !important;
 }
+.hide-all{
+    display: none;
+}
 .black-txt{
 	color: var(--black) !important;
 }
@@ -440,6 +443,11 @@ html::-webkit-scrollbar-thumb {
 
 .org-dashheader-sec-btn:hover{
     opacity: 0.9;  
+}
+
+.org-dashheader-sec-btn:focus{
+    box-shadow: none!important;
+    /* border: none!important;     */
 }
 
 .org-dashboard-menubar{
@@ -968,13 +976,8 @@ html::-webkit-scrollbar-thumb {
     display: none; 
 }
 
-.org-dd-wrapper-post-job .MuiChip-deleteIcon{
-    height : 12px; 
-}
-
-
-.org-dd-wrapper .MuiChip-deleteIcon{
-    height : 12px; 
+.MuiChip-deleteIcon{
+    height : 12px!important; 
 }
 
 .org-jobs-filter-panel{
@@ -1115,7 +1118,6 @@ html::-webkit-scrollbar-thumb {
     padding: 15px 10px 15px 0 !important;
     margin-right: 16px;
     margin-bottom: 10px;
-    
 }
 
 .org-chip-label-style{
@@ -1304,6 +1306,46 @@ html::-webkit-scrollbar-thumb {
     width: 42px;
     height: 42px;
     border-radius: 100%;
+}
+
+.select-default-menuitem{
+    color: rgba(33, 22, 57, 0.7)!important;
+}
+
+.select-input{
+    border: 1px solid rgba(33, 42, 57, 0.25);
+    border-radius: 4px;
+    width: 100%;
+    height: 42px;
+    padding: 8px 16px;
+    color: #212A39!important;
+    font-family: 'Source Sans Pro', sans-serif!important;
+    font-size: 16px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: #ffffff!important;
+    text-overflow: ellipsis;
+}
+
+.MuiInput-underline:before ,.MuiInput-underline:after {
+    border: none!important;
+}
+
+.MuiSelect-select:focus{
+    background-color: #ffffff!important;
+}
+
+.MuiMenu-paper {
+    max-height: 250px!important;
+}
+
+.multi-select .MuiSelect-selectMenu{
+    white-space: initial!important;
+}
+
+.post-job-sec .MuiCard-root {
+    overflow: initial;
 }
 
 @media only screen and (max-width: 992px){

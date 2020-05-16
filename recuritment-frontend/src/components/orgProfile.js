@@ -6,10 +6,10 @@ import { withRouter } from 'react-router';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import bvalid from 'bvalid/lib/bvalid.es';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { addCompanyProfile,uploadimage } from '../actions/orgAction';
 import ArrowIcon from '../assests/dropdown-arrow.svg';
-
-
 
 class OrgProfile extends Component {
     constructor(props){
@@ -20,7 +20,6 @@ class OrgProfile extends Component {
             cweb            : '',
             location        : '',
             employees       : ['1-10','11-50','51-200','201-500','501-1000','1001-5000','5000+'],
-            employesddOpen  : false,
             employesval     : ''
         }
     }
@@ -79,18 +78,12 @@ class OrgProfile extends Component {
     }
 
 
-    selectEmployees(value,id){
+    selectEmployees = (e)=> {
         this.setState({
-            employesval: value,
-            employesddOpen: false
+            employesval: e.target.value
         })
     }
 
-    toggleEmployes = () =>{
-        this.setState({
-            employesddOpen : true
-        })
-    }
     render() {
 
         return (
@@ -115,19 +108,19 @@ class OrgProfile extends Component {
                                 <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
                                     Number of Employees
                                 </Typography>
-                                <div className="org-dd-wrapper-post-job">
-                                    <div className="org-dd-header" onClick={this.toggleEmployes}>
-                                        <div className="org-dd-header-title">{this.state.employesval ? this.state.employesval : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Select no of Employees</span> } </div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
-                                    </div>
-                                    {this.state.employesddOpen && 
-                                        <ul className="org-dd-list" >
-                                            {this.state.employees.map((val,index) => (
-                                                <li className="org-dd-list-item" key={val}  onClick={() => this.selectEmployees(val, index)}>{val}</li>
-                                            ))}
-                                        </ul>
-                                    }
-                                </div>
+                                <Select
+                                    id="employee-number-select"
+                                    className="select-input form-control"
+                                    value={this.state.employesval ? this.state.employesval : 'default'}
+                                    onChange={this.selectEmployees}
+                                >
+                                    <MenuItem value="default"  key={'default'} hidden  >
+                                        Select no of Employees
+                                    </MenuItem>
+                                    {this.state.employees.map((val,index) => (
+                                        <MenuItem  value={val} key={val}>{val}</MenuItem>
+                                    ))}
+                                </Select>
                                 <Typography className="org-signup-detail-title org-profile-create-detail-title-margin" gutterBottom>
                                     Company Website 
                                 </Typography>

@@ -4,6 +4,9 @@ import { withRouter } from 'react-router';
 import TopNavbar from './partials/org-inner-header';
 import Loader from './shared/Loader';
 import Card from '@material-ui/core/Card';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import chipCloseIcon from '../assests/chip-close-icon.svg';
@@ -24,19 +27,27 @@ const quill_formats = [
     'list', 'bullet'
 ]
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
 class OrgPostJob extends Component {
     constructor(props){
         super(props);
         this.state = {
-            jobtyp              : -1,
+            jobtyp              : '',
             jobprof             : '',
-            locVal              : -1,
+            loc_id              : '',
             desc                : '',
             expVal              : '',
-            jobTypeddOpen       : false,
             skillsddOpen        : false,
-            locationlddOpen     : false,
-            experienceddOpen    : false,
             skillsarr           : [],
             skillsarr_ids       : [],
             jobtypearr          : [ {id: 1,jname: 'Full Time'},{id: 2,jname: 'Contractor',},{id: 3,jname: 'Intern',}],
@@ -53,16 +64,6 @@ class OrgPostJob extends Component {
     }
   
 
-    toggleJobType = () =>{
-        this.setState(prevState => ({
-            jobTypeddOpen: !prevState.jobTypeddOpen,
-            experienceddOpen : false,
-            locationlddOpen : false,
-            skillsddOpen : false,
-           
-        }))
-    }
- 
     toggleSkills = () =>{
         this.setState(prevState => ({
             skillsddOpen   : !prevState.skillsddOpen,
@@ -73,25 +74,6 @@ class OrgPostJob extends Component {
         }))
     }
 
-    toggleLocation = () =>{
-        this.setState(prevState => ({
-            locationlddOpen : !prevState.locationlddOpen,
-            jobTypeddOpen : false,
-            profileddOpen : false,
-            skillsddOpen : false,
-            experienceddOpen : false
-        }))
-    }
-
-    toggleExperience = () =>{
-        this.setState(prevState => ({
-            experienceddOpen : !prevState.experienceddOpen,
-            profileddOpen : false,
-            jobTypeddOpen : false,
-            skillsddOpen : false,
-            locationlddOpen : false
-        }))
-    }
 
     selectJobtype(jname, id){
         this.setState({
@@ -106,7 +88,7 @@ class OrgPostJob extends Component {
         })
     }
 
-    addSkills(val, id){
+    addSkills(val,id){
         var arr = JSON.parse(JSON.stringify(this.state.skillsarr));
         var ids_arr = JSON.parse(JSON.stringify(this.state.skillsarr_ids));
         if(arr.indexOf(val) < 0){
@@ -126,14 +108,12 @@ class OrgPostJob extends Component {
 
     handleDeleteSkill(index){
         var arr = JSON.parse(JSON.stringify(this.state.skillsarr));
-        var ids_arr = JSON.parse(JSON.stringify(this.state.skillsarr_ids));
+        console.log(arr);
         if(arr.indexOf(index) < 0){
           arr.splice(index,1);
-          ids_arr.splice(index,1);
-            this.setState({
+           this.setState({
                 skillsarr     : arr,
-                skillsarr_ids : ids_arr,
-                skillsddOpen  : false
+             
             });
         }
     }
@@ -159,12 +139,39 @@ class OrgPostJob extends Component {
     }
 
    
+    handleSelectChange(e, id){
+        var value = e.target.value;
+        console.log(value);
+        switch(id){
+            case 1:
+                this.setState({
+                    jobtyp : value
+                })
+                break;
+            case 2:
+                this.setState({
+                    expVal : value
+                })
+                break;
+            case 3:
+                this.setState({
+                    skillsarr : value
+                })
+            case 5:
+                this.setState({
+                    loc_id : value
+                })
+                break;
+            default:
+                break;
+        }
+    }
 
     postJob = () =>{
         var data = {
-            jobtype : (this.state.jobtyp != -1 ) ? this.state.jobtypearr[this.state.jobtyp].id : 3,
+            jobtype : (this.state.jobtyp) ?this.state.jobtyp : 3,
             jobprof : (this.state.jobprof ) ? this.state.jobprof: null,
-            jobloc : (this.state.locVal != -1) ? this.props.orgpanel.orglocations[this.state.locVal]._id : null,
+            jobloc : (this.state.loc_id) ? this.state.loc_id: null,
             jobexp : (this.state.expVal) ? this.state.expVal : null,
             desc    : this.state.desc ? this.state.desc : null,
             jobskills : this.state.skillsarr_ids.length > 0 ? this.state.skillsarr_ids : null
@@ -175,10 +182,10 @@ class OrgPostJob extends Component {
                 console.log(res);
                 if(res !==  undefined && res.data && res.data.success ){
                     this.setState({
-                        jobtyp            : -1,
+                        jobtyp            : '',
                         jobprof           : '',
-                        locVal            : -1,
-                        desc            : '',
+                        loc_id            : '',
+                        desc              : '',
                         expVal            : '',
                         skillsarr         : [],
                         skillsarr_ids     : []
@@ -193,7 +200,7 @@ class OrgPostJob extends Component {
 
         if(this.props.orgpanel.orglocations && this.props.orgpanel.orgskills){
             return (
-                <div  >
+                <div  className="post-job-sec">
                     <TopNavbar title={this.state.headertitle}/>
                     <div className="row no-margin no-padding center-all">
                         <Typography className="col-xl-8 col-lg-7  col-sm-8 org-generic-form-heading org-max-width no-padding margin-left-sm" gutterBottom>
@@ -221,36 +228,35 @@ class OrgPostJob extends Component {
                                 <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
                                     Type of Position
                                 </Typography>
-                                <div className="org-dd-wrapper">
-                                    <div className="org-dd-header" onClick={this.toggleJobType}>
-                                        <div className="org-dd-header-title">{ (this.state.jobtypearr.length >0 && (this.state.jobtyp >= 0)) ? this.state.jobtypearr[this.state.jobtyp].jname : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Full Time</span> }</div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
-                                    </div>
-                                    {this.state.jobTypeddOpen && 
-                                        <ul className="org-dd-list" >
-                                            {this.state.jobtypearr.map((jobtyp,index) => (
-                                                <li className="org-dd-list-item" key={jobtyp.id}  onClick={() => this.selectJobtype(index, jobtyp.id)}>{jobtyp.jname}</li>
-                                            ))}
-                                        </ul>
-                                    }
-                                </div>
+                                <Select
+                                    id="job-position-select"
+                                    className="select-input form-control"
+                                    value={this.state.jobtyp ? this.state.jobtyp : 'default'}
+                                    onChange={(e) => this.handleSelectChange(e, 1)}
+                                >
+                                    <MenuItem value="default"  key={'default'} hidden  >
+                                        Ex. Full Time
+                                    </MenuItem>
+                                    {this.state.jobtypearr.map((jobtyp,index) => (
+                                        <MenuItem  value={jobtyp.id} key={jobtyp.id}>{jobtyp.jname}</MenuItem>
+                                    ))}
+                                </Select>
                                 <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
                                     Work Experience
                                 </Typography>
-                                <div className="org-dd-wrapper-post-job" >
-                                    <div className="org-dd-header" onClick={this.toggleExperience}>
-                                        <div className="org-dd-header-title">{this.state.expVal ? this.state.expVal : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. 2+</span> } </div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
-                                    </div>
-                                    {this.state.experienceddOpen && 
-                                        <ul className="org-dd-list" >
-                                            {this.state.exparr.map((exp,index) => (
-                                                <li className="org-dd-list-item" key={exp}  onClick={() => this.selectExperience(exp, index)}>{exp} </li>
-                                            ))}
-                                        </ul>
-                                    }  
-                                </div>
-
+                                <Select
+                                    id="work-experience-select"
+                                    className="select-input form-control"
+                                    value={this.state.expVal ? this.state.expVal : 'default'}
+                                    onChange={(e) => this.handleSelectChange(e, 2)}
+                                >
+                                    <MenuItem value="default"  key={'default'} hidden  >
+                                        Ex. 2+
+                                    </MenuItem>
+                                    {this.state.exparr.map((exp,index) => (
+                                        <MenuItem  value={exp} key={exp}>{exp}</MenuItem>
+                                    ))}
+                                </Select>
                                 <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
                                     Skills
                                 </Typography>
@@ -267,7 +273,7 @@ class OrgPostJob extends Component {
                                                         className="org-chips-style"
                                                     />
                                                 )) 
-                                            : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Add Skills</span> }
+                                            : <span >Add Skills</span> }
                                                 
                                            </div>
                                         <img className="org-dd-header-icon" src={ArrowIcon}></img>
@@ -283,25 +289,53 @@ class OrgPostJob extends Component {
                                     }
                                         
                                 </div>
+                                {/* <Select
+                                    style={{height: 'auto',minHeight: 42}}
+                                    className="select-input form-control multi-select"
+                                    id="demo-mutiple-chip"
+                                    multiple
+                                    value={this.state.skillsarr }
+                                    onChange={(e) => this.addSkills(e)}
+                                    input={<Input id="select-multiple-chip" />}
+                                    renderValue={ ()  => (
+                                        <div >
+                                        {this.state.skillsarr.map((skill,index) => (
+                                           <Chip
+                                           key={skill._id}
+                                           label={(<div className="org-chip-label-style">{skill.skl}</div>)}
+                                           onDelete={() => this.handleDeleteSkill(index)}
+                                           deleteIcon = {<img src={chipCloseIcon} />}
+                                           className="org-chips-style"
+                                       />
+                                        ))}
+                                        </div>
+                                    )}
+                                >
+                                    <MenuItem value="default"  key={'default'} hidden  >
+                                        Add Skills
+                                    </MenuItem>
+                                    {this.props.orgpanel.orgskills.map((skill,index) => (
+                                        <MenuItem key={skill._id} value={skill} >
+                                            {skill.skl}
+                                        </MenuItem>
+                                    ))}
+                                </Select> */}
                                 <Typography className="org-signup-detail-title org-post-job-detail-title-margin"  gutterBottom>
                                     Location
                                 </Typography>
-                                <div className="org-dd-wrapper-post-job">
-                                    <div className="org-dd-header" onClick={this.toggleLocation}>
-                                        <div className="org-dd-header-title">{ (this.props.orgpanel.orglocations.length > 0 && (this.state.locVal >= 0)) ? this.props.orgpanel.orglocations[this.state.locVal].city : <span style={{color:'rgba(33, 42, 57, 0.7)'}}>Ex. Delhi</span>}</div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
-                                    </div>
-                                    {this.state.locationlddOpen && 
-                                        <ul className="org-dd-list" >
-                                             {this.props.orgpanel.orglocations.length == 0 ? 
-                                                <li className="org-dd-list-item" key="empty-list" >None</li> :
-                                                this.props.orgpanel.orglocations.map((loc,index) => (
-                                                <li className="org-dd-list-item" key={loc._id}  onClick={() => this.selectLocation(index, loc._id)}>{loc.city}</li>
-                                            ))}
-                                        </ul>
-                                    }
-                                </div>
-                               
+                                <Select
+                                    id="location-select"
+                                    className="select-input form-control"
+                                    value={this.state.loc_id ? this.state.loc_id : 'default'}
+                                    onChange={(e) => this.handleSelectChange(e, 5)}
+                                >
+                                    <MenuItem value="default"  key={'default'} hidden  >
+                                        Ex. Delhi
+                                    </MenuItem>
+                                    {this.props.orgpanel.orglocations.map((loc, index) => (
+                                        <MenuItem  value={loc._id} key={loc._id}>{loc.city}</MenuItem>
+                                    ))}
+                                </Select>
                                 <button className="btn btn-primary org-signup-btn"  style={{marginTop:40}}  onClick={this.postJob}>Post Job</button>
                             </CardContent>
                         </Card>

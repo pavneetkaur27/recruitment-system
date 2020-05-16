@@ -2,19 +2,13 @@ import React, { Component }  from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import MenuItem from '@material-ui/core/MenuItem';
-import Avatar from '@material-ui/core/Avatar';
-import Menu from '@material-ui/core/Menu';
-import MenuList from '@material-ui/core/MenuList';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import bvalid from 'bvalid/lib/bvalid.es';
 import {fetchCompanyProfile} from '../../actions/orgAction';
 import ExploreIcon from '../../icons/explore-icon';
 import AppliedJobIcon from '../../icons/applied-job-icon';
-import ResumeIcon from '../../icons/resume-icon';
+import TrackIcon from '../../icons/track-icon';
 import { Router, Route, Link } from "react-router-dom";
 
 class DashBoardHeader extends Component {
@@ -134,7 +128,7 @@ class DashBoardHeader extends Component {
           >
             <BottomNavigationAction className="bottom-nav-item" onClick={() =>  this.handleClick(2)} label="Jobs" icon={<ExploreIcon />} />
             <BottomNavigationAction className="bottom-nav-item" onClick={() =>  this.handleClick(3)} label="Post Job" icon={<AppliedJobIcon />} />
-            <BottomNavigationAction className="bottom-nav-item" onClick={() =>  this.handleClick(1)} label="Track" icon={<ResumeIcon />} />        
+            <BottomNavigationAction className="bottom-nav-item" onClick={() =>  this.handleClick(1)} label="Track" icon={<TrackIcon />} />        
           </BottomNavigation>
         </div>
       );
@@ -149,6 +143,5 @@ class DashBoardHeader extends Component {
   
 const mapDispatchToProps = {fetchCompanyProfile};
   
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DashBoardHeader))

@@ -37,12 +37,9 @@ class OrgJobs extends Component {
     }
 
     handleEditJob(index, mode,e){ 
-        // console.log(index);
-        this.setState({
-            selectedJob : this.props.orgpanel.orgjobs[index],
-            mode        : mode,
-            openEditJobModal : true,
-            anchorEl : null
+        this.props.history.push({
+            pathname : '/dashboard/postjob',
+            state : {jobid : this.props.orgpanel.orgjobs[index]._id}
         })
     }
 
@@ -129,7 +126,7 @@ class OrgJobs extends Component {
                                                             onClose={this.handleClose}
                                                             // style={{boxShadow:}}
                                                         >
-                                                            <MenuItem  className="org-menuitem-style org-generic-normal-font-style">Edit Job</MenuItem>
+                                                            <MenuItem onClick={(e) => this.handleEditJob(this.state.menuid,e)}  className="org-menuitem-style org-generic-normal-font-style">Edit Job</MenuItem>
                                                             <MenuItem onClick={(e) => this.handleDeleteJob(this.state.menuid,e)} className="org-menuitem-style org-generic-normal-font-style">Delete Job</MenuItem>
                                                         </Menu>  
                                                     </div>
