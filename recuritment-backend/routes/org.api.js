@@ -51,14 +51,20 @@ router.post('/gloc', orgController.maindata.getLocations);
 //create job
 router.post('/c_job',orgController.maindata.createJob);
 
+//edit job
+router.post('/e_job',orgController.maindata.editJob);
+
 // get jobs details
 router.post('/g_p_jobs',orgController.maindata.getPostedJobs);
 
 //delete job
 router.post('/dlt_job',orgController.maindata.deletePostedJob);
 
+// get a particular job detail 
+router.post('/gt_job',orgController.maindata.getJobDetail);
+
 //get All candidates
-router.post('/all_cand',orgController.maindata.getJobApplications);
+router.post('/all_cand',orgController.maindata.getCandidateApplications);
 
 //add candidate details
 router.post('/c_cand_dtl',orgController.maindata.addCandidateDetails);

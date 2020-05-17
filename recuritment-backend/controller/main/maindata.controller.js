@@ -374,14 +374,16 @@ exports.createJob = async function(req,res,next){
         var jbid = saveJob._id;
         var flag = false;
         for(var i = 0 ; i < data.skills.length ; i++){
+            console.log(data.skills[i]);
             try{
                 var skillExist = await mongo.Model('skill').findOne({
                     _id : mongoose.Types.ObjectId(data.skills[i])
                 });
                 if(skillExist){
                     var pushSkill = await mongo.Model('job').updateOne({_id : jbid},{
-                        $set : {skills : {skl_id : mongoose.Types.ObjectId(data.skills[i])}}
+                        $addToSet : {skills : {skl_id : mongoose.Types.ObjectId(data.skills[i])}}
                     });
+                    console.log(pushSkill);
                     flag = true;
                 }
             }catch(err){console.log(err)}
@@ -404,17 +406,115 @@ exports.createJob = async function(req,res,next){
     }
 }
 
+exports.editJob = async function(req,res,next){
+    req.checkBody('jb_id',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('type',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('skills',errorCodes.invalid_parameters[1]).notEmpty();
+    req.checkBody('j_prof',errorCodes.invalid_parameters[1]).notEmpty();
+
+    if(req.validationErrors()){
+       return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+    }
+    
+    function invaliParms(msg,flag){
+        msg = msg ? msg : 'invalid_parameters';
+        if(flag){
+            return sendError(res,msg,"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST,true);
+        }
+        return sendError(res,msg,msg,constants.HTTP_STATUS.BAD_REQUEST);
+    }
+    
+    var data = req.body;
+    var aid = mongoose.Types.ObjectId(req.decoded.id);
+    
+    if(!bvalid.isArray(data.skills) || (bvalid.isArray(data.skills) && data.skills.length == 0)){
+        return invaliParms("skills_required"); 
+    } 
+
+    try{
+        var _ob = {};
+        _ob.p_by = aid;
+        _ob.type = data.type;
+        if(data.location ){
+            _ob.location = data.location;
+        }
+        if(data.exp && bvalid.isString(data.exp) && data.exp.trim().length !== 0){
+            _ob.exp = data.exp;
+        }
+        _ob.j_prof = data.j_prof;
+       
+
+        if(bvalid.isString(data.desc)){_ob.desc = data.desc}
+        
+        var usr_org_map = await mongo.Model('orgmap').findOne({
+            'oemp' : aid,
+            'act' : true,
+        },{oid : 1});
+        if(!usr_org_map){
+            return sendError(res,"org_not_found","org_not_found");
+        }
+        _ob.oid = usr_org_map.oid;
+    
+        _ob.skills = [];
+        var jbid = data.jb_id;
+        await mongo.Model('job').updateOne({
+            _id : jbid,
+            act : true
+        },{$set : _ob});
+        var flag = false;
+        
+        for(var i = 0 ; i < data.skills.length ; i++){
+            console.log(data.skills[i]);
+            try{
+                var skillExist = await mongo.Model('skill').findOne({
+                    _id : mongoose.Types.ObjectId(data.skills[i])
+                });
+                if(skillExist){
+                    var pushSkill = await mongo.Model('job').updateOne({_id : jbid},{
+                        $addToSet : {skills : {skl_id : mongoose.Types.ObjectId(data.skills[i])}}
+                    });
+                    console.log(pushSkill);
+                    flag = true;
+                }
+            }catch(err){console.log(err)}
+        }
+        if(flag){
+            return success(_ob);
+        }
+        return noSkillFail(jbid);
+    }catch(err){
+        console.log(err)
+        return sendError(res,"server_error","server_error");
+    }
+    function success(_d){
+        return sendSuccess(res,_d);
+    }
+    async function noSkillFail(id){
+        try{await mongo.Model('job').remove({_id : id})}
+        catch(err){}
+        return sendError(res,"skills_required","skills_required");
+    }
+}
 
 exports.getPostedJobs = async function(req,res,next){
     var aid = mongoose.Types.ObjectId(req.decoded.id);
     
     try{
-        var org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
+        let org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
         if(!org_user_map){
             return sendError(res,"org_not_found","org_not_found");    
         }
-        var oid = org_user_map.oid;
-        var [err,jobs] = await to(mongo.Model('job').find({oid : oid,act : true},{},{})); 
+        let oid     = org_user_map.oid;
+        let q_str   = {
+            oid : oid,
+            act : true
+        }
+        let option = {
+            sort : {
+                createdAt : -1
+            }
+        }
+        var [err,jobs] = await to(mongo.Model('job').find(q_str,{},option)); 
         if(err){
             return sendError(res,err,"server_error");    
         }
@@ -463,8 +563,50 @@ exports.deletePostedJob = async function(req,res,next){
     }
 }
 
+exports.getJobDetail = async function(req,res,next){
 
-exports.getJobApplications = async function(req,res,next){
+    req.checkBody('jb_id',errorCodes.invalid_parameters[1]).notEmpty();
+
+    if(req.validationErrors()){
+       return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
+    }
+
+    let aid     = mongoose.Types.ObjectId(req.decoded.id);
+    let data    = req.body;
+
+    try{
+        let org_user_map = await mongo.Model('orgmap').findOne({oemp : aid,act : true});
+        if(!org_user_map){
+            return sendError(res,"org_not_found","org_not_found");    
+        }
+        let oid     = org_user_map.oid;
+        let q_str   = {
+            oid : oid,
+            act : true
+        }
+        if(data.jb_id){
+            q_str._id = data.jb_id;
+        }    
+        var [err,job] = await to(mongo.Model('job').findOne(q_str,{},{})); 
+        if(err){
+            return sendError(res,err,"server_error");    
+        }
+        let skills = [];
+        for(var i = 0 ; i < job.skills.length ; i++){
+            var [err,exist] = await to(mongo.Model('skill').findOne({_id : job.skills[i].skl_id,act : true}, {_id : 1,skl:1}));
+            if(exist){
+              skills.push(exist);
+            }
+        }
+        job.skills = skills;
+        return sendSuccess(res,{job : job})
+    }catch(err){
+        return sendError(res,err,"server_error");
+    }
+}
+
+
+exports.getCandidateApplications = async function(req,res,next){
 
     if(req.validationErrors()){
       	return sendError(res,req.validationErrors(),"invalid_parameters",constants.HTTP_STATUS.BAD_REQUEST);
