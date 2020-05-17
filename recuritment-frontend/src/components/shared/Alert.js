@@ -41,14 +41,14 @@ class Alerts extends Component {
         return (
             <div className={ (this.props.show || (this.props.storedata && this.props.storedata.show)) ? "error-popover" : "error-popover hide-error-popover"}>
                 <div className="ep-icon-container">
-                    <img className={"icon"} src={this.state.img}/>
+                    <img alt=""  className={"icon"} src={this.state.img}/>
                 </div>
                 <div className="ep-content">
                     <p className="ep-heading">{ this.state.heading }</p>
                     <p className="ep-msg">{this.props.message || (this.props.storedata &&  this.props.storedata.message)}</p>
                 </div>
                 <div className="close">
-                    <img onClick={this.props.hideAlert} className="close-img" src={close_img}/>
+                    <img alt="close"  onClick={this.props.hideAlert} className="close-img" src={close_img}/>
                 </div>
             </div>
         )

@@ -36,10 +36,10 @@ class OrgJobs extends Component {
         })
     }
 
-    handleEditJob(index, mode,e){ 
+    handleEditJob(index){ 
         this.props.history.push({
             pathname : '/dashboard/postjob',
-            state : {jobid : this.props.orgpanel.orgjobs[index]._id}
+            state : {mode : 'edit' , jb_id : this.props.orgpanel.orgjobs[index]._id}
         })
     }
 
@@ -64,11 +64,6 @@ class OrgJobs extends Component {
         });
     }
 
-    handleCloseJobModalToggle = (val) => {
-        return this.setState({ 
-            openCloseJobModal: val 
-        });
-    }
 
     getDateValue(date){
         return new Date(date).toLocaleDateString();

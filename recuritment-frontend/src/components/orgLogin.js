@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux";
-import Cookies from 'universal-cookie';
 import Card from '@material-ui/core/Card';
 import { withRouter } from 'react-router';
 import MainHeader from './partials/org-header';
@@ -10,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import { orgLogin } from '../actions/orgAction';
 
 
-const cookies = new Cookies();
 
 class OrgLogin extends Component {
     constructor(props){

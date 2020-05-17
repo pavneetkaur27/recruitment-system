@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux";
-import Cookies from 'universal-cookie';
 import Card from '@material-ui/core/Card';
 import { withRouter } from 'react-router';
 import MainHeader from './partials/org-header';
@@ -9,7 +8,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { orgSignUp } from '../actions/orgAction';
 
-const cookies = new Cookies();
 
 class OrgSignUp extends Component {
     constructor(props){
@@ -27,13 +25,6 @@ class OrgSignUp extends Component {
     }
 
     passwordHandleChange = (e) =>{
-        // console.log(e.target.value);
-        // var pass = this.state.password.concat("*");
-        // var act_pass = this.state.apassword.concat(e.target.value[e.target.value.length-1]);
-        // this.setState({
-        //     apassword : act_pass,
-        //     password  : pass
-        // })
         this.setState({
             isPasswordError : false,
             password : e.target.value,
@@ -41,14 +32,6 @@ class OrgSignUp extends Component {
     }
 
     confirmPasswordHandleChange = (e) =>{
-        // console.log(e.target.value);
-        // console.log("hlo")
-        // // var cpass = this.state.cpassword.concat("*");
-        // // var act_cpass = this.state.acpassword.concat(e.target.value[e.target.value.length-1]);
-        // this.setState({
-        //     cpassword  : e.target.value,
-        //     // acpassword : act_cpass
-        // })
         this.setState({
             isCPasswordError : false,
             cpassword : e.target.value,

@@ -27,7 +27,6 @@ function InnerHeader(props) {
   };
 
   if(props.orgpanel.org_cmp_prof){
-    console.log(props.orgpanel.org_cmp_prof)
     return (
       <div >
         <AppBar position="static" className="shared-header org-innerheader-toolbar" style={{height:56}} >
@@ -36,8 +35,8 @@ function InnerHeader(props) {
               {props.title}
             </Typography>
             <div onClick={handleClick} className="cursor-pointer">
-              <img className="company-logo-header" src={props.orgpanel.org_cmp_prof.org.org_logo}></img>
-              <img style={{ marginLeft:10,width:12}} src={ArrowIcon}></img>
+              <img alt=""  className="company-logo-header" src={props.orgpanel.org_cmp_prof.org.org_logo}></img>
+              <img alt=""  style={{ marginLeft:10,width:12}} src={ArrowIcon}></img>
             </div>
             <Menu
                 id = 'dashboard-menu'

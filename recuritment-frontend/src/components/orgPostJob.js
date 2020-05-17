@@ -5,7 +5,6 @@ import TopNavbar from './partials/org-inner-header';
 import Loader from './shared/Loader';
 import Card from '@material-ui/core/Card';
 import Select from '@material-ui/core/Select';
-import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +12,7 @@ import chipCloseIcon from '../assests/chip-close-icon.svg';
 import Chip from '@material-ui/core/Chip';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
-import { fetchSkills,fetchlocations,postJob ,clearSavedJobApplicationValues} from '../actions/orgAction';
+import { fetchSkills,fetchlocations,postJob ,clearSavedJobApplicationValues,fetchParticularJob,updateOrgJob} from '../actions/orgAction';
 import ArrowIcon from '../assests/dropdown-arrow.svg';
 
 const quill_modules = {
@@ -27,16 +26,16 @@ const quill_formats = [
     'list', 'bullet'
 ]
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//     PaperProps: {
+//       style: {
+//         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//         width: 250,
+//       },
+//     },
+//   };
 
 class OrgPostJob extends Component {
     constructor(props){
@@ -49,10 +48,10 @@ class OrgPostJob extends Component {
             expVal              : '',
             skillsddOpen        : false,
             skillsarr           : [],
-            skillsarr_ids       : [],
             jobtypearr          : [ {id: 1,jname: 'Full Time'},{id: 2,jname: 'Contractor',},{id: 3,jname: 'Intern',}],
             exparr              : ['0+','1+','2+','3+','4+','5+'],
-            headertitle         : 'Post Job'    
+            headertitle         : (this.props.history.location.state && (this.props.history.location.state.mode == 'edit' ))? 'Edit Job' : 'Post Job',
+            edit_mode           : (this.props.history.location.state && this.props.history.location.state.mode == 'edit' )? true : false
         }
     }
 
@@ -61,16 +60,27 @@ class OrgPostJob extends Component {
         this.props.clearSavedJobApplicationValues();
         this.props.fetchSkills();
         this.props.fetchlocations();
+        if(this.state.edit_mode && (this.props.history.location.state && this.props.history.location.state.jb_id)){
+            this.props.fetchParticularJob({jb_id : this.props.history.location.state.jb_id});
+        }
     }
   
+    componentWillReceiveProps(nextProps){
+        if(this.state.edit_mode){
+            this.setState({
+                jobtyp              : (this.state.jobtyp ? this.state.jobtyp : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.type) ? nextProps.orgpanel.jobdetail.type:'' ), 
+                jobprof             : (this.state.jobprof ? this.state.jobprof : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.j_prof) ? nextProps.orgpanel.jobdetail.j_prof:'' ), 
+                loc_id              : (this.state.loc_id ? this.state.loc_id : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.location) ? nextProps.orgpanel.jobdetail.location:'' ), 
+                desc                : (this.state.desc ? this.state.desc : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.desc) ? nextProps.orgpanel.jobdetail.desc:'' ), 
+                expVal              : (this.state.expVal ? this.state.expVal : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.exp) ? nextProps.orgpanel.jobdetail.exp:'' ), 
+                skillsarr           : (this.state.skillsarr.length > 0  ? this.state.skillsarr : (nextProps.orgpanel.jobdetail && nextProps.orgpanel.jobdetail.skills) ? nextProps.orgpanel.jobdetail.skills:'' )
+            })
+        }
+    }
 
     toggleSkills = () =>{
         this.setState(prevState => ({
             skillsddOpen   : !prevState.skillsddOpen,
-            jobTypeddOpen : false,
-            experienceddOpen : false,
-            locationlddOpen : false
-            
         }))
     }
 
@@ -88,17 +98,19 @@ class OrgPostJob extends Component {
         })
     }
 
-    addSkills(val,id){
+    addSkills(skill){
         var arr = JSON.parse(JSON.stringify(this.state.skillsarr));
-        var ids_arr = JSON.parse(JSON.stringify(this.state.skillsarr_ids));
-        if(arr.indexOf(val) < 0){
-          arr.push(val);
-          ids_arr.push(id);
-            this.setState({
-                skillsarr    : arr,
-                skillsarr_ids : ids_arr,
-                skillsddOpen : false
-            });
+        for(var i = 0; i< arr.length ; i++){
+            if(arr[i]._id == skill._id){
+                break;
+            }
+        }
+        if(i >= arr.length){
+          arr.push(skill);
+          this.setState({
+            skillsarr    : arr,
+            skillsddOpen : false
+          });
         }else{
             this.setState({
                 skillsddOpen : false
@@ -109,13 +121,10 @@ class OrgPostJob extends Component {
     handleDeleteSkill(index){
         var arr = JSON.parse(JSON.stringify(this.state.skillsarr));
         console.log(arr);
-        if(arr.indexOf(index) < 0){
-          arr.splice(index,1);
-           this.setState({
-                skillsarr     : arr,
-             
-            });
-        }
+        arr.splice(index,1);
+        this.setState({
+            skillsarr     : arr,
+        });
     }
 
     selectLocation(title, id){
@@ -168,15 +177,19 @@ class OrgPostJob extends Component {
     }
 
     postJob = () =>{
+        let skillsarr_ids = [];
+        for(let i =0 ; i< this.state.skillsarr.length ;i++){
+            let skill = this.state.skillsarr[i];
+            skillsarr_ids.push(skill._id);
+        }
         var data = {
             jobtype : (this.state.jobtyp) ?this.state.jobtyp : 3,
             jobprof : (this.state.jobprof ) ? this.state.jobprof: null,
             jobloc : (this.state.loc_id) ? this.state.loc_id: null,
             jobexp : (this.state.expVal) ? this.state.expVal : null,
             desc    : this.state.desc ? this.state.desc : null,
-            jobskills : this.state.skillsarr_ids.length > 0 ? this.state.skillsarr_ids : null
+            jobskills : skillsarr_ids
         }
-
         this.props.postJob(data)
             .then((res) => {
                 console.log(res);
@@ -188,17 +201,41 @@ class OrgPostJob extends Component {
                         desc              : '',
                         expVal            : '',
                         skillsarr         : [],
-                        skillsarr_ids     : []
                     })
                 }
         })
     }
 
+    editJob = () =>{
+        let skillsarr_ids = [];
+        for(let i =0 ; i< this.state.skillsarr.length ;i++){
+            let skill = this.state.skillsarr[i];
+            skillsarr_ids.push(skill._id);
+        }
+        var data = {
+            jb_id   : (this.props.history.location.state && this.props.history.location.state.jb_id ? this.props.history.location.state.jb_id : null),
+            jobtype : (this.state.jobtyp) ?this.state.jobtyp : 3,
+            jobprof : (this.state.jobprof ) ? this.state.jobprof: null,
+            jobloc  : (this.state.loc_id) ? this.state.loc_id: null,
+            jobexp  : (this.state.expVal) ? this.state.expVal : null,
+            desc    : this.state.desc ? this.state.desc : null,
+            jobskills : skillsarr_ids
+        }
+        this.props.updateOrgJob(data)
+        .then(res => {
+            if(res !==  undefined && res.data && res.data.success ){
+                this.props.history.push({
+                    pathname : '/dashboard/jobs',
+                })   
+            }
+        });
+    }
     render() {
 
+        console.log(this.props.history.location.state);
         console.log(this.props);
-
-        if(this.props.orgpanel.orglocations && this.props.orgpanel.orgskills){
+        console.log(this.state.skillsarr);
+        if(this.props.orgpanel.orglocations && this.props.orgpanel.orgskills && ( this.state.edit_mode ? this.props.orgpanel.jobdetail : true )){
             return (
                 <div  className="post-job-sec">
                     <TopNavbar title={this.state.headertitle}/>
@@ -267,7 +304,7 @@ class OrgPostJob extends Component {
                                                 this.state.skillsarr.map( (skill ,index) => (
                                                     <Chip
                                                         key={index}
-                                                        label={(<div className="org-chip-label-style">{skill}</div>)}
+                                                        label={(<div className="org-chip-label-style">{skill.skl}</div>)}
                                                         onDelete={() => this.handleDeleteSkill(index)}
                                                         deleteIcon = {<img src={chipCloseIcon} />}
                                                         className="org-chips-style"
@@ -283,11 +320,10 @@ class OrgPostJob extends Component {
                                              {this.props.orgpanel.orgskills.length == 0 ? 
                                                 <li className="org-dd-list-item" key="empty-list" >None</li> :
                                                 this.props.orgpanel.orgskills.map((skill,index) => (
-                                                <li className="org-dd-list-item" key={skill._id}  onClick={() => this.addSkills(skill.skl, skill._id)}>{skill.skl}</li>
+                                                <li className="org-dd-list-item" key={skill._id}  onClick={() => this.addSkills(skill)}>{skill.skl}</li>
                                             ))}
                                         </ul>
                                     }
-                                        
                                 </div>
                                 {/* <Select
                                     style={{height: 'auto',minHeight: 42}}
@@ -336,7 +372,8 @@ class OrgPostJob extends Component {
                                         <MenuItem  value={loc._id} key={loc._id}>{loc.city}</MenuItem>
                                     ))}
                                 </Select>
-                                <button className="btn btn-primary org-signup-btn"  style={{marginTop:40}}  onClick={this.postJob}>Post Job</button>
+                                {!this.state.edit_mode ? <button className="btn btn-primary org-signup-btn"  style={{marginTop:40}}  onClick={this.postJob}>Post Job</button>
+                                 : <button className="btn btn-primary org-signup-btn"  style={{marginTop:40}}  onClick={this.editJob}>Edit Job</button>}
                             </CardContent>
                         </Card>
                     </div> 
@@ -357,6 +394,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = {fetchSkills,fetchlocations,postJob,clearSavedJobApplicationValues};
+const mapDispatchToProps = {fetchSkills,fetchlocations,postJob,clearSavedJobApplicationValues,fetchParticularJob,updateOrgJob};
 
 export default withRouter(connect( mapStateToProps, mapDispatchToProps)(OrgPostJob));

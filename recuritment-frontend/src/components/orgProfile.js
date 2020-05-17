@@ -9,7 +9,7 @@ import bvalid from 'bvalid/lib/bvalid.es';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { addCompanyProfile,uploadimage } from '../actions/orgAction';
-import ArrowIcon from '../assests/dropdown-arrow.svg';
+
 
 class OrgProfile extends Component {
     constructor(props){

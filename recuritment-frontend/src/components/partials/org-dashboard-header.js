@@ -70,7 +70,8 @@ class DashBoardHeader extends Component {
       });
     }else  if(val == 3){
       this.props.history.push({ 
-        pathname :"/dashboard/postjob"
+        pathname  :"/dashboard/postjob",
+        state     : {mode : 'view'}
       });
     }
   }

@@ -55,6 +55,12 @@ export default function (state = initialState, action) {
                 orgjobs: action.payload.org_jobs,
             }
         
+        case "ORG_PARTICULAR_JOB" :
+            return {
+                ...state,
+                jobdetail : action.payload.job_dtl
+            }
+            
         case "ORG_AVAILABLE_JOB_APPLICATIONS":
             return {
                 ...state,
@@ -71,6 +77,7 @@ export default function (state = initialState, action) {
             return {
             ...state,
                 orgjobid :'',
+                jobdetail : ''
             }
         
         case "ORG_CANDIDATE_DETAIL":
@@ -98,12 +105,6 @@ export default function (state = initialState, action) {
                     org_cmp_prof : action.payload.org_cmp_prof_dtl
                 }
         
-        case "CANDIDATE_RESUME_DETAILS_ORG":
-            return {
-                ...state,
-                resum_dtl : action.payload.resum_dtl
-            }
-
         default:
             return state;
     }

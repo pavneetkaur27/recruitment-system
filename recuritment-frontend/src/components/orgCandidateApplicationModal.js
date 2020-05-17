@@ -176,7 +176,7 @@ class CandidateApplicationModal extends Component {
                                 <div className="org-dd-wrapper">
                                     <div className="org-dd-header" onClick={this.toggleJobProfile}>
                                         <div className="org-dd-header-title">{ this.state.jobtyp? this.state.jobtyp : ''}</div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
+                                        <img alt="loading" className="org-dd-header-icon" src={ArrowIcon}></img>
                                     </div>
                                     {this.state.jobTypeddOpen && 
                                         <ul className="org-dd-list" style={{"overflowY": "hidden"}}>
@@ -201,7 +201,7 @@ class CandidateApplicationModal extends Component {
                                 <div className="org-dd-wrapper">
                                     <div className="org-dd-header" onClick={this.toggleApplicationStatus}>
                                         <div className="org-dd-header-title">{ this.state.statusval ? this.state.statusval : ''}</div>
-                                        <img className="org-dd-header-icon" src={ArrowIcon}></img>
+                                        <img alt="loading" className="org-dd-header-icon" src={ArrowIcon}></img>
                                     </div>
                                     {this.state.statusddOpen && 
                                         <ul className="org-dd-list" style={{"overflowY": "hidden"}}>
@@ -222,7 +222,7 @@ class CandidateApplicationModal extends Component {
                                         onChange={(e)=>{this.addResume(e)}}
                                         ref={input => this.clickAddCompanyLogo = input}/>
                                         
-                                {this.state.resume_url ? <a href={this.state.resume_url} style={{textDecoration: 'none'}} target="_blank">View</a> : null}
+                                {this.state.resume_url ? <a href={this.state.resume_url} style={{textDecoration: 'none'}} rel="noopener noreferrer" target="_blank">View</a> : null}
                             </div>
                            
                             <button className="btn btn-primary org-signup-btn"  style={{marginTop:24}}  onClick={this.addCandidate}>Save</button> 

@@ -308,7 +308,6 @@ export const addCompanyProfile = (data) => dispatch => {
   };
   startLoader(dispatch,1);
   axios(requestObj).then((response) => {
-    console.log(response);
     stopLoader(dispatch);
     if (response && response.data.success && response.data) {
       return window.location.replace('/dashboard/postjob');
@@ -354,7 +353,6 @@ export const fetchSkills = (data) => dispatch => {
     }
   };
   axios(requestObj).then((response) => {
-    console.log(response);
     // stopLoader(dispatch);
     if (response && response.data.success && response.data) {
       return dispatch({
@@ -405,7 +403,6 @@ export const fetchlocations = (data) => dispatch => {
     }
   };
   axios(requestObj).then((response) => {
-    console.log(response);
     // stopLoader(dispatch);
     if (response && response.data.success && response.data) {
       return dispatch({
@@ -455,17 +452,30 @@ export const fetchOrgJobs = (data) => dispatch => {
     }
   };
 
+  if(data && data.jb_id){
+    requestObj.data = {
+      jb_id : data.jb_id
+    }
+  }
   startLoader(dispatch,1);
   return axios(requestObj).then((response) => {
-    console.log(response);
     stopLoader(dispatch);
     if (response && response.data.success && response.data) {
-      dispatch({
-        type: "ORG_AVAILABLE_JOBS", 
-        payload: {
-            org_jobs : response.data.data.jobs
-        }
-      });
+      if(data && data.jb_id){
+        dispatch({
+          type: "ORG_PARTICULAR_JOB",
+          payload: {
+              job_dtl : response.data.data.jobs[0]
+          }
+        });
+      }else{
+        dispatch({
+          type: "ORG_AVAILABLE_JOBS", 
+          payload: {
+              org_jobs : response.data.data.jobs
+          }
+        });
+      }
       return response; 
     }
   })
@@ -555,19 +565,136 @@ export const postJob = (data) => dispatch => {
 }
 
 
+export const deleteJob = (data) => dispatch => {
+  
+  var requestObj = {
+    method: 'POST',
+    data: {
+      jb_id : data.jb_id
+    },
+    url: API_ENDPOINT + '/org/dlt_job',
+    headers: {
+      'x-access-token': cookies.get('ou_at')
+    }
+  };
+  startLoader(dispatch,1);
+  return axios(requestObj)
+    .then((response) => {
+      stopLoader(dispatch);
+      console.log(response.data.data);
+      if (response && response.data.success && response.data) {
+        dispatch({
+          type: "SHOW_NOTIFY", payload: {
+            type: 'success',
+            message: "Job Deleted!",
+            dispatch: dispatch
+          }
+        });
+        dispatch(fetchOrgJobs());
+        return response;
+      } else {
+        return dispatch({
+          type: "SHOW_NOTIFY", payload: {
+            type: 'error',
+            message: "Something went wrong",
+            dispatch: dispatch
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      var err_msg = "Something went wrong";
+      if (err.response && err.response.statusText) {
+        err_msg = err.response.statusText;
+      }
+      if(err.response && err.response.data && err.response.data.err){
+        err_msg = err.response.data.err;
+      }
+      if(err && err.response && err.response.data){
+        handleResponseErrorCase1(err.response.data || {})
+      }
+      stopLoader(dispatch);
+      return dispatch({
+        type: "SHOW_NOTIFY", payload: {
+          type: 'error',
+          message: err_msg,
+          dispatch: dispatch
+        }
+      });
+    })
+}
+
+
+export const fetchParticularJob = (data) => dispatch => {
+  
+  var requestObj = {
+    method: 'POST',
+    data: {
+      jb_id : data.jb_id
+    },
+    url: API_ENDPOINT + '/org/gt_job',
+    headers: {
+      'x-access-token': cookies.get('ou_at')
+    }
+  };
+  startLoader(dispatch,1);
+  axios(requestObj)
+    .then((response) => {
+      stopLoader(dispatch);
+      console.log(response.data.data);
+      if (response && response.data.success && response.data) {
+        return dispatch({
+          type: "ORG_PARTICULAR_JOB",
+          payload: {
+              job_dtl : response.data.data.job
+          }
+        });
+      } else {
+        return dispatch({
+          type: "SHOW_NOTIFY", payload: {
+            type: 'error',
+            message: "Something went wrong",
+            dispatch: dispatch
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      var err_msg = "Something went wrong";
+      if (err.response && err.response.statusText) {
+        err_msg = err.response.statusText;
+      }
+      if(err.response && err.response.data && err.response.data.err){
+        err_msg = err.response.data.err;
+      }
+      if(err && err.response && err.response.data){
+        handleResponseErrorCase1(err.response.data || {})
+      }
+      stopLoader(dispatch);
+      return dispatch({
+        type: "SHOW_NOTIFY", payload: {
+          type: 'error',
+          message: err_msg,
+          dispatch: dispatch
+        }
+      });
+    })
+}
+
 export const updateOrgJob = (data) => dispatch => {
   
   var requestObj = {
     method: 'POST',
     data: {
-      jb_id : data.jobid,
+      jb_id : data.jb_id,
       type : data.jobtype,
       skills : data.jobskills,
       j_prof : data.jobprof,
       location : data.jobloc,
       exp : data.jobexp,
-      salary : data.jobsal,
-      rspblty : data.jobresp,
+      desc : data.desc,
     },
     url: API_ENDPOINT + '/org/e_job',
     headers: {
@@ -908,66 +1035,6 @@ export const fetchCompanyProfile = () => dispatch => {
       }
       stopLoader(dispatch);
        return dispatch({
-        type: "SHOW_NOTIFY", payload: {
-          type: 'error',
-          message: err_msg,
-          dispatch: dispatch
-        }
-      });
-    })
-}
-
-export const deleteJob = (data) => dispatch => {
-  
-  var requestObj = {
-    method: 'POST',
-    data: {
-      jb_id : data.jb_id
-    },
-    url: API_ENDPOINT + '/org/dlt_job',
-    headers: {
-      'x-access-token': cookies.get('ou_at')
-    }
-  };
-  startLoader(dispatch,1);
-  return axios(requestObj)
-    .then((response) => {
-      stopLoader(dispatch);
-      console.log(response.data.data);
-      if (response && response.data.success && response.data) {
-        dispatch({
-          type: "SHOW_NOTIFY", payload: {
-            type: 'success',
-            message: "Job Deleted!",
-            dispatch: dispatch
-          }
-        });
-        dispatch(fetchOrgJobs());
-        return response;
-      } else {
-        return dispatch({
-          type: "SHOW_NOTIFY", payload: {
-            type: 'error',
-            message: "Something went wrong",
-            dispatch: dispatch
-          }
-        });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      var err_msg = "Something went wrong";
-      if (err.response && err.response.statusText) {
-        err_msg = err.response.statusText;
-      }
-      if(err.response && err.response.data && err.response.data.message){
-        err_msg = err.response.data.message;
-      }
-      if(err && err.response && err.response.data){
-        handleResponseErrorCase1(err.response.data || {})
-      }
-      stopLoader(dispatch);
-      return dispatch({
         type: "SHOW_NOTIFY", payload: {
           type: 'error',
           message: err_msg,
