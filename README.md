@@ -1,13 +1,13 @@
 # recuritment-system
 
 ## How to run the RECRUITEMENT BACKEND
-1. In your terminal, navigate to the `api` directory.
+1. In your terminal, navigate to the `recruitment-backend` directory.
 2. Run `npm install` to install all dependencies.
 3. Run `npm start` to start the app.
 
 
 ## How to run the ## How to run the RECRUITEMENT FRONTEND
-1. In another terminal, navigate to the `client` directory.
+1. In another terminal, navigate to the `recruitment-frontend` directory.
 2. Run `npm install` to install all dependencies.
 3. Run `npm run start` or `npm run local` to run in local environment. 
 
